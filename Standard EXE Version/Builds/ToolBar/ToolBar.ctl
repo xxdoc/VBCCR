@@ -375,7 +375,7 @@ Private Const WM_PAINT As Long = &HF
 Private Const WM_PRINT As Long = &H317, PRF_CLIENT As Long = &H4, PRF_ERASEBKGND As Long = &H8
 Private Const WM_DESTROY As Long = &H2
 Private Const WM_NCDESTROY As Long = &H82
-Private Const WM_STYLECHANGED As Long = &H7D
+Private Const WM_UPDATEUISTATE As Long = &H128, UIS_SET As Long = 1, UISF_HIDEACCEL As Long = &H2
 Private Const WM_USER As Long = &H400
 Private Const UM_SETBUTTONCX As Long = (WM_USER + 200)
 Private Const TB_ENABLEBUTTON As Long = (WM_USER + 1)
@@ -414,14 +414,11 @@ Private Const TB_AUTOSIZE As Long = (WM_USER + 33)
 Private Const TB_GETTOOLTIPS As Long = (WM_USER + 35)
 Private Const TB_SETTOOLTIPS As Long = (WM_USER + 36)
 Private Const TB_GETROWS As Long = (WM_USER + 40)
-Private Const TB_CHANGEBITMAP As Long = (WM_USER + 43)
-Private Const TB_GETBITMAP As Long = (WM_USER + 44)
 Private Const TB_GETBUTTONTEXTA As Long = (WM_USER + 45)
 Private Const TB_GETBUTTONTEXTW As Long = (WM_USER + 75)
 Private Const TB_GETBUTTONTEXT As Long = TB_GETBUTTONTEXTW
 Private Const TB_SETIMAGELIST As Long = (WM_USER + 48)
 Private Const TB_GETIMAGELIST As Long = (WM_USER + 49)
-Private Const TB_LOADIMAGES As Long = (WM_USER + 50)
 Private Const TB_GETRECT As Long = (WM_USER + 51)
 Private Const TB_SETHOTIMAGELIST As Long = (WM_USER + 52)
 Private Const TB_GETHOTIMAGELIST As Long = (WM_USER + 53)
@@ -529,8 +526,7 @@ Private Const TBDDRET_TREATPRESSED As Long = 2
 Private Const TBIMHT_AFTER As Long = &H1
 Private Const TBIMHT_BACKGROUND As Long = &H2
 Private Const I_IMAGENONE As Long = (-2)
-Private Const H_MAX As Long = (&HFFFF + 1)
-Private Const NM_FIRST As Long = H_MAX
+Private Const NM_FIRST As Long = 0
 Private Const NM_CUSTOMDRAW As Long = (NM_FIRST - 12)
 Private Const NM_TOOLTIPSCREATED As Long = (NM_FIRST - 19)
 Private Const BTNS_BUTTON As Long = &H0
@@ -714,7 +710,7 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_BAR_CLASSES)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 ReDim ImageListArray(0) As String
 ReDim DisabledImageListArray(0) As String
 ReDim HotImageListArray(0) As String
@@ -729,8 +725,8 @@ If DispIDHotImageList = 0 Then DispIDHotImageList = GetDispID(Me, "HotImageList"
 If DispIDPressedImageList = 0 Then DispIDPressedImageList = GetDispID(Me, "PressedImageList")
 On Error Resume Next
 If UserControl.ParentControls.Count = 0 Then ToolBarAlignable = False Else ToolBarAlignable = True
-On Error GoTo 0
 ToolBarDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 If ToolBarAlignable = True Then Extender.Align = vbAlignTop
 Set PropFont = Ambient.Font
 PropVisualStyles = True
@@ -775,8 +771,8 @@ If DispIDHotImageList = 0 Then DispIDHotImageList = GetDispID(Me, "HotImageList"
 If DispIDPressedImageList = 0 Then DispIDPressedImageList = GetDispID(Me, "PressedImageList")
 On Error Resume Next
 If UserControl.ParentControls.Count = 0 Then ToolBarAlignable = False Else ToolBarAlignable = True
-On Error GoTo 0
 ToolBarDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 With PropBag
 Set PropFont = .ReadProperty("Font", Nothing)
 PropVisualStyles = .ReadProperty("VisualStyles", True)
@@ -1130,7 +1126,7 @@ If ToolBarDesignMode = True Then Call UserControl_Resize
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroyToolBar
 Call ComCtlsReleaseShellMod
 End Sub
@@ -1406,6 +1402,7 @@ Select Case Value
     Case Else
         Err.Raise 380
 End Select
+If ToolBarDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MousePointer"
 End Property
 
@@ -1433,6 +1430,7 @@ Else
         End If
     End If
 End If
+If ToolBarDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MouseIcon"
 End Property
 
@@ -3080,7 +3078,7 @@ If ToolBarDesignMode = True Then
     dwStyle = dwStyle Or TBSTYLE_TRANSPARENT
     dwExStyle = dwExStyle Or WS_EX_TRANSPARENT
 End If
-ToolBarHandle = CreateWindowEx(dwExStyle, StrPtr("ToolbarWindow32"), StrPtr("Tool Bar"), dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
+ToolBarHandle = CreateWindowEx(dwExStyle, StrPtr("ToolbarWindow32"), 0, dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
 If ToolBarHandle <> 0 Then
     Call ComCtlsShowAllUIStates(ToolBarHandle)
     Dim TBB As TBBUTTON
@@ -3320,10 +3318,10 @@ If ToolBarHandle <> 0 Then
 End If
 End Sub
 
-Public Sub ContainerKeyDown(ByRef KeyCode As Integer, ByRef Shift As Integer)
-Attribute ContainerKeyDown.VB_Description = "Method to provide accelerator key access by forwarding the key down events of the container. The key preview property need to be set to true by a form container."
-If ToolBarHandle = 0 Or Shift <> vbAltMask Then Exit Sub
-If IsWindowEnabled(ToolBarHandle) = 0 Then Exit Sub
+Public Function ContainerKeyDown(ByRef KeyCode As Integer, ByRef Shift As Integer) As TbrButton
+Attribute ContainerKeyDown.VB_Description = "Provides accelerator key access by forwarding the key down events of the container. The key preview property need to be set to true by a form container."
+If ToolBarHandle = 0 Or (Shift <> vbAltMask And Shift <> (vbAltMask Or vbShiftMask)) Then Exit Function
+If IsWindowEnabled(ToolBarHandle) = 0 Then Exit Function
 Dim ID As Long, Accel As Integer, Count As Long, TBBI As TBBUTTONINFO
 Count = SendMessage(ToolBarHandle, TB_BUTTONCOUNT, 0, ByVal 0&)
 With TBBI
@@ -3382,10 +3380,28 @@ If ID > 0 Then
                 SendMessage ToolBarHandle, TB_PRESSBUTTON, ID, ByVal 0&
             End If
         End If
+        Set ContainerKeyDown = Button
     End If
 End If
 End With
-End Sub
+End Function
+
+Public Function FindMnemonic(ByVal CharCode As Long) As TbrButton
+Attribute FindMnemonic.VB_Description = "Returns a reference to the button object with an matching mnemonic character."
+If ToolBarHandle <> 0 Then
+    ' TB_MAPACCELERATOR matches either the mnemonic character or the first character in a button item.
+    ' This behavior is undocumented and unwanted.
+    ' The fix is to use the ID only when TB_MAPACCELERATOR returns a nonzero value.
+    Dim ID As Long
+    If SendMessage(ToolBarHandle, TB_MAPACCELERATOR, CharCode, ByVal VarPtr(ID)) <> 0 Then
+        If IsButtonAvailable(ID) = True Then
+            Dim Ptr As Long
+            Ptr = GetButtonPtr(ID)
+            If Ptr <> 0 Then Set FindMnemonic = PtrToObj(Ptr)
+        End If
+    End If
+End If
+End Function
 
 Public Function HitTest(ByVal X As Single, ByVal Y As Single) As TbrButton
 Attribute HitTest.VB_Description = "Returns a reference to the button object located at the coordinates of X and Y."
@@ -3948,6 +3964,17 @@ Select Case wMsg
             End With
             SendMessage ToolBarHandle, TB_SETBUTTONINFO, wParam, ByVal VarPtr(TBBI)
         End If
+    Case WM_UPDATEUISTATE
+        ' When a ToolBar is hosted in a MDIForm it *can* happen that an MDIChild sets UISF_HIDEACCEL to it's owner.
+        ' However, this ensures to circumvent such scenario.
+        If LoWord(wParam) = UIS_SET Then
+            Dim IntValue As Integer
+            IntValue = HiWord(wParam)
+            If (IntValue And UISF_HIDEACCEL) = UISF_HIDEACCEL Then
+                IntValue = IntValue And Not UISF_HIDEACCEL
+                wParam = MakeDWord(UIS_SET, IntValue)
+            End If
+        End If
 End Select
 WindowProcControl = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
 Select Case wMsg
@@ -4260,10 +4287,5 @@ WindowProcUserControlDesignMode = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
 Select Case wMsg
     Case WM_DESTROY, WM_NCDESTROY
         Call ComCtlsRemoveSubclass(hWnd)
-    Case WM_STYLECHANGED
-        Dim dwStyleOld As Long, dwStyleNew As Long
-        CopyMemory dwStyleOld, ByVal lParam, 4
-        CopyMemory dwStyleNew, ByVal UnsignedAdd(lParam, 4), 4
-        If dwStyleOld = dwStyleNew Then Call ComCtlsRemoveSubclass(hWnd)
 End Select
 End Function

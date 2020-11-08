@@ -9,57 +9,72 @@ Begin VB.PropertyPage PPToolBarGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   5625
    ScaleWidth      =   6225
-   Begin VBCCR16.CheckBoxW CheckHideClippedButtons 
+   Begin VBCCR17.TextBoxW TextMaxTextRows 
+      Height          =   315
+      Left            =   1800
+      TabIndex        =   28
+      Top             =   4800
+      Width           =   2235
+      _ExtentX        =   0
+      _ExtentY        =   0
+   End
+   Begin VB.CheckBox CheckAnchorHot 
+      Caption         =   "AnchorHot"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   38
+      Top             =   3720
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   29
+      Top             =   480
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckHideClippedButtons 
+      Caption         =   "HideClippedButtons"
       Height          =   285
       Left            =   4200
       TabIndex        =   37
       Top             =   3360
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0000
    End
-   Begin VBCCR16.CheckBoxW CheckHotTracking 
+   Begin VB.CheckBox CheckHotTracking 
+      Caption         =   "HotTracking"
       Height          =   285
       Left            =   4200
       TabIndex        =   36
       Top             =   3000
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0044
    End
-   Begin VBCCR16.CheckBoxW CheckTransparent 
+   Begin VB.CheckBox CheckTransparent 
+      Caption         =   "Transparent"
       Height          =   285
       Left            =   4200
       TabIndex        =   35
       Top             =   2640
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":007A
    End
-   Begin VBCCR16.ComboBoxW ComboPressedImageList 
+   Begin VB.ComboBox ComboPressedImageList 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   12
       Top             =   1920
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboOrientation 
+   Begin VB.ComboBox ComboOrientation 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   18
       Top             =   3000
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextMaxButtonWidth 
+   Begin VBCCR17.TextBoxW TextMaxButtonWidth 
       Height          =   315
       Left            =   1800
       TabIndex        =   26
@@ -68,7 +83,7 @@ Begin VB.PropertyPage PPToolBarGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMinButtonWidth 
+   Begin VBCCR17.TextBoxW TextMinButtonWidth 
       Height          =   315
       Left            =   1800
       TabIndex        =   24
@@ -77,107 +92,87 @@ Begin VB.PropertyPage PPToolBarGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckAltDrag 
+   Begin VB.CheckBox CheckAltDrag 
+      Caption         =   "AltDrag"
       Height          =   285
       Left            =   4200
       TabIndex        =   34
       Top             =   2280
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":00B0
    End
-   Begin VBCCR16.CheckBoxW CheckDoubleBuffer 
+   Begin VB.CheckBox CheckDoubleBuffer 
+      Caption         =   "DoubleBuffer"
       Height          =   285
       Left            =   3480
       TabIndex        =   2
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":00DE
    End
-   Begin VBCCR16.ComboBoxW ComboDisabledImageList 
+   Begin VB.ComboBox ComboDisabledImageList 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   8
       Top             =   1200
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckWrappable 
+   Begin VB.CheckBox CheckWrappable 
+      Caption         =   "Wrappable"
       Height          =   285
       Left            =   4200
       TabIndex        =   31
       Top             =   1200
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0116
    End
-   Begin VBCCR16.CheckBoxW CheckDivider 
+   Begin VB.CheckBox CheckDivider 
+      Caption         =   "Divider"
       Height          =   285
       Left            =   4200
       TabIndex        =   33
       Top             =   1920
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0148
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   4
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboImageList 
+   Begin VB.ComboBox ComboImageList 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   6
       Top             =   840
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboStyle 
+   Begin VB.ComboBox ComboStyle 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   14
       Top             =   2280
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboTextAlignment 
+   Begin VB.ComboBox ComboTextAlignment 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   16
       Top             =   2640
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboHotImageList 
+   Begin VB.ComboBox ComboHotImageList 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   10
       Top             =   1560
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextButtonWidth 
+   Begin VBCCR17.TextBoxW TextButtonWidth 
       Height          =   315
       Left            =   1800
       TabIndex        =   22
@@ -186,7 +181,7 @@ Begin VB.PropertyPage PPToolBarGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextButtonHeight 
+   Begin VBCCR17.TextBoxW TextButtonHeight 
       Height          =   315
       Left            =   1800
       TabIndex        =   20
@@ -195,74 +190,37 @@ Begin VB.PropertyPage PPToolBarGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckShowTips 
+   Begin VB.CheckBox CheckShowTips 
+      Caption         =   "ShowTips"
       Height          =   285
       Left            =   4200
       TabIndex        =   32
       Top             =   1560
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0176
    End
-   Begin VBCCR16.CheckBoxW CheckAllowCustomize 
+   Begin VB.CheckBox CheckAllowCustomize 
+      Caption         =   "AllowCustomize"
       Height          =   285
       Left            =   4200
       TabIndex        =   30
       Top             =   840
       Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":01A6
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":01E2
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0210
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   29
-      Top             =   480
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":0248
-   End
-   Begin VBCCR16.CheckBoxW CheckAnchorHot 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   38
-      Top             =   3720
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPToolBarGeneral.pgx":027C
-   End
-   Begin VBCCR16.TextBoxW TextMaxTextRows 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   28
-      Top             =   4800
-      Width           =   2235
-      _ExtentX        =   0
-      _ExtentY        =   0
    End
    Begin VB.Label LabelMaxTextRows 
       Caption         =   "MaxTextRows:"

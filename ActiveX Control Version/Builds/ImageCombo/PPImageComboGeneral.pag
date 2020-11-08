@@ -9,37 +9,39 @@ Begin VB.PropertyPage PPImageComboGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3810
    ScaleWidth      =   5925
-   Begin VBCCR16.CheckBoxW CheckScrollTrack 
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   21
+      Top             =   480
+      Width           =   1620
+   End
+   Begin VB.CheckBox CheckScrollTrack 
+      Caption         =   "ScrollTrack"
       Height          =   285
       Left            =   4200
       TabIndex        =   24
       Top             =   1560
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboEllipsisFormat 
+   Begin VB.ComboBox ComboEllipsisFormat 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   20
       Top             =   3360
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboIMEMode 
+   Begin VB.ComboBox ComboIMEMode 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   18
       Top             =   3000
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextMaxLength 
+   Begin VBCCR17.TextBoxW TextMaxLength 
       Height          =   315
       Left            =   1800
       TabIndex        =   16
@@ -48,7 +50,7 @@ Begin VB.PropertyPage PPImageComboGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMaxDropDownItems 
+   Begin VBCCR17.TextBoxW TextMaxDropDownItems 
       Height          =   315
       Left            =   1800
       TabIndex        =   14
@@ -57,57 +59,47 @@ Begin VB.PropertyPage PPImageComboGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   3480
       TabIndex        =   2
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":0036
    End
-   Begin VBCCR16.CheckBoxW CheckShowImages 
+   Begin VB.CheckBox CheckShowImages 
+      Caption         =   "ShowImages"
       Height          =   285
       Left            =   4200
       TabIndex        =   23
       Top             =   1200
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":006E
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   4
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboImageList 
+   Begin VB.ComboBox ComboImageList 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   6
       Top             =   840
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboStyle 
+   Begin VB.ComboBox ComboStyle 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   8
       Top             =   1200
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextIndentation 
+   Begin VBCCR17.TextBoxW TextIndentation 
       Height          =   315
       Left            =   1800
       TabIndex        =   12
@@ -116,7 +108,7 @@ Begin VB.PropertyPage PPImageComboGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextText 
+   Begin VBCCR17.TextBoxW TextText 
       Height          =   315
       Left            =   1800
       TabIndex        =   10
@@ -125,45 +117,29 @@ Begin VB.PropertyPage PPImageComboGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckExtendedUI 
+   Begin VB.CheckBox CheckExtendedUI 
+      Caption         =   "ExtendedUI"
       Height          =   285
       Left            =   4200
       TabIndex        =   22
       Top             =   840
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":00A2
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":00D6
    End
-   Begin VBCCR16.CheckBoxW CheckLocked 
+   Begin VB.CheckBox CheckLocked 
+      Caption         =   "Locked"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":0104
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   21
-      Top             =   480
-      Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageComboGeneral.pgx":0130
    End
    Begin VB.Label LabelEllipsisFormat 
       Caption         =   "EllipsisFormat:"

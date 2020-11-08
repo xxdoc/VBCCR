@@ -16,45 +16,37 @@ Begin VB.PropertyPage PPListViewImageLists
       TabIndex        =   0
       Top             =   120
       Width           =   4455
-      Begin VBCCR16.ComboBoxW ComboGroup 
+      Begin VB.ComboBox ComboGroup 
          Height          =   315
          Left            =   1920
+         Style           =   2  'Dropdown List
          TabIndex        =   8
          Top             =   1440
          Width           =   2235
-         _ExtentX        =   3942
-         _ExtentY        =   556
-         Style           =   2
       End
-      Begin VBCCR16.ComboBoxW ComboColumnHeader 
+      Begin VB.ComboBox ComboColumnHeader 
          Height          =   315
          Left            =   1920
+         Style           =   2  'Dropdown List
          TabIndex        =   6
          Top             =   1080
          Width           =   2235
-         _ExtentX        =   3942
-         _ExtentY        =   556
-         Style           =   2
       End
-      Begin VBCCR16.ComboBoxW ComboSmall 
+      Begin VB.ComboBox ComboSmall 
          Height          =   315
          Left            =   1920
+         Style           =   2  'Dropdown List
          TabIndex        =   4
          Top             =   720
          Width           =   2235
-         _ExtentX        =   3942
-         _ExtentY        =   556
-         Style           =   2
       End
-      Begin VBCCR16.ComboBoxW ComboNormal 
+      Begin VB.ComboBox ComboNormal 
          Height          =   315
          Left            =   1920
+         Style           =   2  'Dropdown List
          TabIndex        =   2
          Top             =   360
          Width           =   2235
-         _ExtentX        =   3942
-         _ExtentY        =   556
-         Style           =   2
       End
       Begin VB.Label LabelGroup 
          Caption         =   "&Group:"

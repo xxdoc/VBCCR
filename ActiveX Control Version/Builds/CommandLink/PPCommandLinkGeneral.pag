@@ -9,7 +9,15 @@ Begin VB.PropertyPage PPCommandLinkGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3450
    ScaleWidth      =   6075
-   Begin VBCCR16.TextBoxW TextHint 
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   10
+      Top             =   480
+      Width           =   1770
+   End
+   Begin VBCCR17.TextBoxW TextHint 
       Height          =   675
       Left            =   1800
       TabIndex        =   9
@@ -20,7 +28,7 @@ Begin VB.PropertyPage PPCommandLinkGeneral
       MultiLine       =   -1  'True
       ScrollBars      =   2
    End
-   Begin VBCCR16.TextBoxW TextCaption 
+   Begin VBCCR17.TextBoxW TextCaption 
       Height          =   675
       Left            =   1800
       TabIndex        =   7
@@ -31,65 +39,45 @@ Begin VB.PropertyPage PPCommandLinkGeneral
       MultiLine       =   -1  'True
       ScrollBars      =   2
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   3
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboImageList 
+   Begin VB.ComboBox ComboImageList 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   5
       Top             =   840
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckTransparent 
+   Begin VB.CheckBox CheckTransparent 
+      Caption         =   "Transparent"
       Height          =   285
       Left            =   4200
       TabIndex        =   11
       Top             =   840
       Width           =   1770
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCommandLinkGeneral.pgx":0000
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCommandLinkGeneral.pgx":0036
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCommandLinkGeneral.pgx":0064
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   10
-      Top             =   480
-      Width           =   1770
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCommandLinkGeneral.pgx":009C
    End
    Begin VB.Label LabelHint 
       Caption         =   "Hint:"

@@ -9,65 +9,53 @@ Begin VB.PropertyPage PPAnimationGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3450
    ScaleWidth      =   5925
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
       Height          =   285
       Left            =   4200
       TabIndex        =   5
       Top             =   480
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPAnimationGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   2
       Top             =   480
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboBackStyle 
+   Begin VB.ComboBox ComboBackStyle 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   4
       Top             =   840
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckCenter 
+   Begin VB.CheckBox CheckCenter 
+      Caption         =   "Center"
       Height          =   285
       Left            =   4200
       TabIndex        =   7
       Top             =   1200
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPAnimationGeneral.pgx":0034
    End
-   Begin VBCCR16.CheckBoxW CheckAutoPlay 
+   Begin VB.CheckBox CheckAutoPlay 
+      Caption         =   "AutoPlay"
       Height          =   285
       Left            =   4200
       TabIndex        =   6
       Top             =   840
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPAnimationGeneral.pgx":0060
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPAnimationGeneral.pgx":0090
    End
    Begin VB.Label LabelMousePointer 
       Caption         =   "MousePointer:"

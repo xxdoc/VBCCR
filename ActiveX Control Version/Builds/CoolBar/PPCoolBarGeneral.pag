@@ -9,135 +9,109 @@ Begin VB.PropertyPage PPCoolBarGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   4875
    ScaleWidth      =   6225
-   Begin VBCCR16.CheckBoxW CheckShowTips 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   14
-      Top             =   2640
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":0000
-   End
-   Begin VBCCR16.CheckBoxW CheckVerticalGripper 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   13
-      Top             =   2280
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":0030
-   End
-   Begin VBCCR16.CheckBoxW CheckDblClickToggle 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   12
-      Top             =   1920
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":006E
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   8
-      Top             =   480
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":00AA
-   End
-   Begin VBCCR16.CheckBoxW CheckFixedOrder 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   10
-      Top             =   1200
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":00DE
-   End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   3
-      Top             =   480
-      Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
-   End
-   Begin VBCCR16.ComboBoxW ComboImageList 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   5
-      Top             =   840
-      Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
-   End
-   Begin VBCCR16.ComboBoxW ComboOrientation 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   7
-      Top             =   1200
-      Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
-   End
-   Begin VBCCR16.CheckBoxW CheckVariantHeight 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   11
-      Top             =   1560
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":0112
-   End
-   Begin VBCCR16.CheckBoxW CheckBandBorders 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   9
-      Top             =   840
-      Width           =   1920
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":014C
-   End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
-      Height          =   285
-      Left            =   120
-      TabIndex        =   0
-      Top             =   120
-      Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":0182
-   End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
-      Height          =   285
-      Left            =   1800
-      TabIndex        =   1
-      Top             =   120
-      Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":01B0
-   End
-   Begin VBCCR16.CheckBoxW CheckDoubleBuffer 
+   Begin VB.CheckBox CheckDoubleBuffer 
+      Caption         =   "DoubleBuffer"
       Height          =   285
       Left            =   3480
       TabIndex        =   15
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarGeneral.pgx":01E8
+   End
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   8
+      Top             =   480
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckShowTips 
+      Caption         =   "ShowTips"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   14
+      Top             =   2640
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckVerticalGripper 
+      Caption         =   "VerticalGripper"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   13
+      Top             =   2280
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckDblClickToggle 
+      Caption         =   "DblClickToggle"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   12
+      Top             =   1920
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckFixedOrder 
+      Caption         =   "FixedOrder"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   10
+      Top             =   1200
+      Width           =   1920
+   End
+   Begin VB.ComboBox ComboMousePointer 
+      Height          =   315
+      Left            =   1800
+      Style           =   2  'Dropdown List
+      TabIndex        =   3
+      Top             =   480
+      Width           =   2235
+   End
+   Begin VB.ComboBox ComboImageList 
+      Height          =   315
+      Left            =   1800
+      Style           =   2  'Dropdown List
+      TabIndex        =   5
+      Top             =   840
+      Width           =   2235
+   End
+   Begin VB.ComboBox ComboOrientation 
+      Height          =   315
+      Left            =   1800
+      Style           =   2  'Dropdown List
+      TabIndex        =   7
+      Top             =   1200
+      Width           =   2235
+   End
+   Begin VB.CheckBox CheckVariantHeight 
+      Caption         =   "VariantHeight"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   11
+      Top             =   1560
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckBandBorders 
+      Caption         =   "BandBorders"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   9
+      Top             =   840
+      Width           =   1920
+   End
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
+      Height          =   285
+      Left            =   120
+      TabIndex        =   0
+      Top             =   120
+      Width           =   1620
+   End
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
+      Height          =   285
+      Left            =   1800
+      TabIndex        =   1
+      Top             =   120
+      Width           =   1620
    End
    Begin VB.Label LabelMousePointer 
       Caption         =   "MousePointer:"

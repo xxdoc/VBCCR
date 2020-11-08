@@ -9,17 +9,15 @@ Begin VB.PropertyPage PPSliderGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3450
    ScaleWidth      =   5925
-   Begin VBCCR16.CheckBoxW CheckReversed 
+   Begin VB.CheckBox CheckReversed 
+      Caption         =   "Reversed"
       Height          =   285
       Left            =   3000
       TabIndex        =   15
       Top             =   1560
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSliderGeneral.pgx":0000
    End
-   Begin VBCCR16.TextBoxW TextSelLength 
+   Begin VBCCR17.TextBoxW TextSelLength 
       Height          =   315
       Left            =   4320
       TabIndex        =   14
@@ -28,7 +26,7 @@ Begin VB.PropertyPage PPSliderGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextSelStart 
+   Begin VBCCR17.TextBoxW TextSelStart 
       Height          =   315
       Left            =   4320
       TabIndex        =   12
@@ -37,7 +35,7 @@ Begin VB.PropertyPage PPSliderGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextLargeChange 
+   Begin VBCCR17.TextBoxW TextLargeChange 
       Height          =   315
       Left            =   1440
       TabIndex        =   9
@@ -46,7 +44,7 @@ Begin VB.PropertyPage PPSliderGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextSmallChange 
+   Begin VBCCR17.TextBoxW TextSmallChange 
       Height          =   315
       Left            =   1440
       TabIndex        =   7
@@ -55,7 +53,7 @@ Begin VB.PropertyPage PPSliderGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMax 
+   Begin VBCCR17.TextBoxW TextMax 
       Height          =   315
       Left            =   1440
       TabIndex        =   5
@@ -64,7 +62,7 @@ Begin VB.PropertyPage PPSliderGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMin 
+   Begin VBCCR17.TextBoxW TextMin 
       Height          =   315
       Left            =   1440
       TabIndex        =   3
@@ -73,35 +71,29 @@ Begin VB.PropertyPage PPSliderGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckSelectRange 
+   Begin VB.CheckBox CheckSelectRange 
+      Caption         =   "SelectRange"
       Height          =   285
       Left            =   3000
       TabIndex        =   10
       Top             =   480
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSliderGeneral.pgx":0030
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSliderGeneral.pgx":0066
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSliderGeneral.pgx":0094
    End
    Begin VB.Label LabelSelLength 
       Caption         =   "SelLength:"

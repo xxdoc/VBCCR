@@ -26,12 +26,6 @@ Public Enum SpbNumberStyleConstants
 SpbNumberStyleDecimal = 0
 SpbNumberStyleHexadecimal = 1
 End Enum
-Private Type RECT
-Left As Long
-Top As Long
-Right As Long
-Bottom As Long
-End Type
 Private Type POINTAPI
 X As Long
 Y As Long
@@ -137,7 +131,6 @@ Private Const WS_VISIBLE As Long = &H10000000
 Private Const WS_CHILD As Long = &H40000000
 Private Const WS_EX_CLIENTEDGE As Long = &H200
 Private Const WS_EX_RTLREADING As Long = &H2000
-Private Const WM_MOUSEACTIVATE As Long = &H21, MA_ACTIVATE As Long = &H1, MA_ACTIVATEANDEAT As Long = &H2, MA_NOACTIVATE As Long = &H3, MA_NOACTIVATEANDEAT As Long = &H4, HTBORDER As Long = 18
 Private Const SW_HIDE As Long = &H0
 Private Const TME_LEAVE As Long = &H2, TME_NONCLIENT As Long = &H10
 Private Const WM_SETFOCUS As Long = &H7
@@ -177,25 +170,23 @@ Private Const ES_NOHIDESEL As Long = &H100
 Private Const ES_LEFT As Long = &H0
 Private Const ES_CENTER As Long = &H1
 Private Const ES_RIGHT As Long = &H2
-Private Const H_MAX As Long = (&HFFFF + 1)
-Private Const UDN_FIRST As Long = (H_MAX - 721)
+Private Const UDN_FIRST As Long = (-721)
 Private Const UDN_DELTAPOS As Long = (UDN_FIRST - 1)
 Private Const UDS_WRAP As Long = &H1
 Private Const UDS_SETBUDDYINT As Long = &H2
 Private Const UDS_ALIGNRIGHT As Long = &H4
 Private Const UDS_ALIGNLEFT As Long = &H8
-Private Const UDS_AUTOBUDDY As Long = &H10
 Private Const UDS_ARROWKEYS As Long = &H20
 Private Const UDS_NOTHOUSANDS As Long = &H80
 Private Const UDS_HOTTRACK As Long = &H100
 Private Const WM_USER As Long = &H400
 Private Const UM_CHECKVALUE As Long = (WM_USER + 300)
-Private Const UDM_SETRANGE As Long = (WM_USER + 101)
-Private Const UDM_GETRANGE As Long = (WM_USER + 102)
+Private Const UDM_SETRANGE As Long = (WM_USER + 101) ' 16 bit
+Private Const UDM_GETRANGE As Long = (WM_USER + 102) ' 16 bit
 Private Const UDM_SETRANGE32 As Long = (WM_USER + 111)
 Private Const UDM_GETRANGE32 As Long = (WM_USER + 112)
-Private Const UDM_SETPOS As Long = (WM_USER + 103)
-Private Const UDM_GETPOS As Long = (WM_USER + 104)
+Private Const UDM_SETPOS As Long = (WM_USER + 103) ' 16 bit
+Private Const UDM_GETPOS As Long = (WM_USER + 104) ' 16 bit
 Private Const UDM_GETPOS32 As Long = (WM_USER + 114)
 Private Const UDM_SETPOS32 As Long = (WM_USER + 113)
 Private Const UDM_SETBUDDY As Long = (WM_USER + 105)
@@ -216,6 +207,7 @@ Private SpinBoxFontHandle As Long
 Private SpinBoxCharCodeCache As Long
 Private SpinBoxMouseOver(0 To 2) As Boolean
 Private SpinBoxDesignMode As Boolean, SpinBoxTopDesignMode As Boolean
+Private UCNoSetFocusFwd As Boolean
 Private DispIDMousePointer As Long
 Private WithEvents PropFont As StdFont
 Attribute PropFont.VB_VarHelpID = -1
@@ -246,7 +238,7 @@ End Sub
 Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByRef riid As OLEGuids.OLECLSID, ByVal dwOptionsSetMask As Long, ByVal dwEnabledOptions As Long)
 End Sub
 
-Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
+Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
 If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     Dim KeyCode As Integer, IsInputKey As Boolean
     KeyCode = wParam And &HFF&
@@ -257,16 +249,12 @@ If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     End If
     Select Case KeyCode
         Case vbKeyUp, vbKeyDown, vbKeyLeft, vbKeyRight, vbKeyPageDown, vbKeyPageUp, vbKeyHome, vbKeyEnd
-            If SpinBoxEditHandle <> 0 Then
-                SendMessage SpinBoxEditHandle, wMsg, wParam, ByVal lParam
-                Handled = True
-            End If
+            SendMessage hWnd, wMsg, wParam, ByVal lParam
+            Handled = True
         Case vbKeyTab, vbKeyReturn, vbKeyEscape
             If IsInputKey = True Then
-                If SpinBoxEditHandle <> 0 Then
-                    SendMessage SpinBoxEditHandle, wMsg, wParam, ByVal lParam
-                    Handled = True
-                End If
+                SendMessage hWnd, wMsg, wParam, ByVal lParam
+                Handled = True
             End If
     End Select
 End If
@@ -296,8 +284,8 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_STANDARD_CLASSES Or ICC_UPDOWN_CLASS)
-Call SetVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 End Sub
 
 Private Sub UserControl_InitProperties()
@@ -439,8 +427,8 @@ InProc = False
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroySpinBox
 Call ComCtlsReleaseShellMod
 End Sub
@@ -718,6 +706,7 @@ Select Case Value
     Case Else
         Err.Raise 380
 End Select
+If SpinBoxDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MousePointer"
 End Property
 
@@ -745,6 +734,7 @@ Else
         End If
     End If
 End If
+If SpinBoxDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MouseIcon"
 End Property
 
@@ -1105,7 +1095,7 @@ If PropLocked = True Then dwStyleEdit = dwStyleEdit Or ES_READONLY
 If PropHideSelection = False Then dwStyleEdit = dwStyleEdit Or ES_NOHIDESEL
 SpinBoxEditHandle = CreateWindowEx(dwExStyleEdit, StrPtr("Edit"), 0, dwStyleEdit, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
 If SpinBoxEditHandle <> 0 Then
-    SpinBoxUpDownHandle = CreateWindowEx(0, StrPtr("msctls_updown32"), StrPtr("Up Down"), dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
+    SpinBoxUpDownHandle = CreateWindowEx(0, StrPtr("msctls_updown32"), 0, dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
     If SpinBoxUpDownHandle <> 0 Then
         SendMessage SpinBoxUpDownHandle, UDM_SETUNICODEFORMAT, 1, ByVal 0&
         SendMessage SpinBoxUpDownHandle, UDM_SETRANGE32, PropMin, ByVal PropMax
@@ -1301,7 +1291,10 @@ End If
 End Property
 
 Public Property Let SelText(ByVal Value As String)
-If SpinBoxEditHandle <> 0 Then SendMessage SpinBoxEditHandle, EM_REPLACESEL, 0, ByVal StrPtr(Value)
+If SpinBoxEditHandle <> 0 Then
+    If StrPtr(Value) = 0 Then Value = ""
+    SendMessage SpinBoxEditHandle, EM_REPLACESEL, 0, ByVal StrPtr(Value)
+End If
 End Property
 
 Private Function ISubclass_Message(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal dwRefData As Long) As Long
@@ -1316,21 +1309,17 @@ End Select
 End Function
 
 Private Function WindowProcControl(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
-Select Case wMsg
-    Case WM_SETFOCUS
-        SetFocusAPI UserControl.hWnd
-        Exit Function
-    Case UM_CHECKVALUE
-        If wParam <> PropValue Then
-            PropValue = wParam
-            UserControl.PropertyChanged "Value"
-            On Error Resume Next
-            UserControl.Extender.DataChanged = True
-            On Error GoTo 0
-            RaiseEvent Change
-        End If
-        Exit Function
-End Select
+If wMsg = UM_CHECKVALUE Then
+    If wParam <> PropValue Then
+        PropValue = wParam
+        UserControl.PropertyChanged "Value"
+        On Error Resume Next
+        UserControl.Extender.DataChanged = True
+        On Error GoTo 0
+        RaiseEvent Change
+    End If
+    Exit Function
+End If
 WindowProcControl = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
 Select Case wMsg
     Case WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN, WM_MOUSEMOVE, WM_LBUTTONUP, WM_MBUTTONUP, WM_RBUTTONUP
@@ -1402,33 +1391,8 @@ Select Case wMsg
                 End If
             End If
         End If
-    Case WM_MOUSEACTIVATE
-        Static InProc As Boolean
-        If SpinBoxTopDesignMode = False And GetFocus() <> SpinBoxUpDownHandle And GetFocus() <> SpinBoxEditHandle Then
-            If InProc = True Or LoWord(lParam) = HTBORDER Then WindowProcEdit = MA_ACTIVATEANDEAT: Exit Function
-            Select Case HiWord(lParam)
-                Case WM_LBUTTONDOWN
-                    On Error Resume Next
-                    With UserControl
-                    If .Extender.CausesValidation = True Then
-                        InProc = True
-                        Call ComCtlsTopParentValidateControls(Me)
-                        InProc = False
-                        If Err.Number = 380 Then
-                            WindowProcEdit = MA_ACTIVATEANDEAT
-                        Else
-                            SetFocusAPI .hWnd
-                            WindowProcEdit = MA_NOACTIVATE
-                        End If
-                    Else
-                        SetFocusAPI .hWnd
-                        WindowProcEdit = MA_NOACTIVATE
-                    End If
-                    End With
-                    On Error GoTo 0
-                    Exit Function
-            End Select
-        End If
+    Case WM_LBUTTONDOWN
+        If GetFocus() <> hWnd Then UCNoSetFocusFwd = True: SetFocusAPI UserControl.hWnd: UCNoSetFocusFwd = False
     Case WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
         Dim KeyCode As Integer
         KeyCode = wParam And &HFF&
@@ -1460,7 +1424,19 @@ Select Case wMsg
             wParam = CIntToUInt(KeyChar)
         End If
     Case WM_UNICHAR
-        If wParam = UNICODE_NOCHAR Then WindowProcEdit = 1 Else SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
+        If wParam = UNICODE_NOCHAR Then
+            WindowProcEdit = 1
+        Else
+            Dim UTF16 As String
+            UTF16 = UTF32CodePoint_To_UTF16(wParam)
+            If Len(UTF16) = 1 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(UTF16)), ByVal lParam
+            ElseIf Len(UTF16) = 2 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Left$(UTF16, 1))), ByVal lParam
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Right$(UTF16, 1))), ByVal lParam
+            End If
+            WindowProcEdit = 0
+        End If
         Exit Function
     Case WM_IME_CHAR
         SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
@@ -1470,12 +1446,12 @@ Select Case wMsg
             Dim P1 As POINTAPI, Handled As Boolean
             P1.X = Get_X_lParam(lParam)
             P1.Y = Get_Y_lParam(lParam)
-            If P1.X > 0 And P1.Y > 0 Then
-                ScreenToClient SpinBoxEditHandle, P1
-                RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P1.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P1.Y, vbPixels, vbContainerPosition))
-            ElseIf P1.X = -1 And P1.Y = -1 Then
+            If P1.X = -1 And P1.Y = -1 Then
                 ' If the user types SHIFT + F10 then the X and Y coordinates are -1.
                 RaiseEvent ContextMenu(Handled, -1, -1)
+            Else
+                ScreenToClient SpinBoxEditHandle, P1
+                RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P1.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P1.Y, vbPixels, vbContainerPosition))
             End If
             If Handled = True Then Exit Function
         End If
@@ -1610,5 +1586,5 @@ Select Case wMsg
         End If
 End Select
 WindowProcUserControl = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
-If wMsg = WM_SETFOCUS Then SetFocusAPI SpinBoxEditHandle
+If wMsg = WM_SETFOCUS And UCNoSetFocusFwd = False Then SetFocusAPI SpinBoxEditHandle
 End Function

@@ -9,37 +9,47 @@ Begin VB.PropertyPage PPStatusBarGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   4140
    ScaleWidth      =   5925
-   Begin VBCCR16.CheckBoxW CheckShowTips 
+   Begin VB.CheckBox CheckDoubleBuffer 
+      Caption         =   "DoubleBuffer"
+      Height          =   285
+      Left            =   3480
+      TabIndex        =   2
+      Top             =   120
+      Width           =   1620
+   End
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   9
+      Top             =   480
+      Width           =   1620
+   End
+   Begin VB.CheckBox CheckShowTips 
+      Caption         =   "ShowTips"
       Height          =   285
       Left            =   4200
       TabIndex        =   11
       Top             =   1200
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   4
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboStyle 
+   Begin VB.ComboBox ComboStyle 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   6
       Top             =   840
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextSimpleText 
+   Begin VBCCR17.TextBoxW TextSimpleText 
       Height          =   315
       Left            =   1800
       TabIndex        =   8
@@ -48,55 +58,29 @@ Begin VB.PropertyPage PPStatusBarGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckAllowSizeGrip 
+   Begin VB.CheckBox CheckAllowSizeGrip 
+      Caption         =   "AllowSizeGrip"
       Height          =   285
       Left            =   4200
       TabIndex        =   10
       Top             =   840
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarGeneral.pgx":0030
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarGeneral.pgx":006A
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarGeneral.pgx":0098
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   9
-      Top             =   480
-      Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarGeneral.pgx":00D0
-   End
-   Begin VBCCR16.CheckBoxW CheckDoubleBuffer 
-      Height          =   285
-      Left            =   3480
-      TabIndex        =   2
-      Top             =   120
-      Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarGeneral.pgx":0104
    End
    Begin VB.Label LabelMousePointer 
       Caption         =   "MousePointer:"

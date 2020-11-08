@@ -9,57 +9,63 @@ Begin VB.PropertyPage PPDTPickerGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   4200
    ScaleWidth      =   6900
-   Begin VBCCR16.ComboBoxW ComboCalendarAlignment 
+   Begin VB.CheckBox CheckCalendarUseShortestDayNames 
+      Caption         =   "CalendarUseShortestDayNames"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   24
+      Top             =   2640
+      Width           =   2610
+   End
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   18
+      Top             =   480
+      Width           =   2610
+   End
+   Begin VB.ComboBox ComboCalendarAlignment 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   17
       Top             =   3000
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckCalendarShowTrailingDates 
+   Begin VB.CheckBox CheckCalendarShowTrailingDates 
+      Caption         =   "CalendarShowTrailingDates"
       Height          =   285
       Left            =   4200
       TabIndex        =   22
       Top             =   1920
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboStartOfWeek 
+   Begin VB.ComboBox ComboStartOfWeek 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   15
       Top             =   2640
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckAllowUserInput 
+   Begin VB.CheckBox CheckAllowUserInput 
+      Caption         =   "AllowUserInput"
       Height          =   285
       Left            =   4200
       TabIndex        =   27
       Top             =   3720
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":0052
    End
-   Begin VBCCR16.CheckBoxW CheckCalendarDayState 
+   Begin VB.CheckBox CheckCalendarDayState 
+      Caption         =   "CalendarDayState"
       Height          =   285
       Left            =   4200
       TabIndex        =   23
       Top             =   2280
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":008E
    End
-   Begin VBCCR16.TextBoxW TextMaxDate 
+   Begin VBCCR17.TextBoxW TextMaxDate 
       Height          =   315
       Left            =   1800
       TabIndex        =   9
@@ -68,7 +74,7 @@ Begin VB.PropertyPage PPDTPickerGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMinDate 
+   Begin VBCCR17.TextBoxW TextMinDate 
       Height          =   315
       Left            =   1800
       TabIndex        =   7
@@ -77,7 +83,7 @@ Begin VB.PropertyPage PPDTPickerGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextValue 
+   Begin VBCCR17.TextBoxW TextValue 
       Height          =   315
       Left            =   1800
       TabIndex        =   5
@@ -86,47 +92,39 @@ Begin VB.PropertyPage PPDTPickerGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   3
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckCalendarShowWeekNumbers 
+   Begin VB.CheckBox CheckCalendarShowWeekNumbers 
+      Caption         =   "CalendarShowWeekNumbers"
       Height          =   285
       Left            =   4200
       TabIndex        =   21
       Top             =   1560
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":00CE
    End
-   Begin VBCCR16.CheckBoxW CheckCalendarShowTodayCircle 
+   Begin VB.CheckBox CheckCalendarShowTodayCircle 
+      Caption         =   "CalendarShowTodayCircle"
       Height          =   285
       Left            =   4200
       TabIndex        =   20
       Top             =   1200
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":011C
    End
-   Begin VBCCR16.CheckBoxW CheckCalendarShowToday 
+   Begin VB.CheckBox CheckCalendarShowToday 
+      Caption         =   "CalendarShowToday"
       Height          =   285
       Left            =   4200
       TabIndex        =   19
       Top             =   840
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":016A
    End
-   Begin VBCCR16.TextBoxW TextCustomFormat 
+   Begin VBCCR17.TextBoxW TextCustomFormat 
       Height          =   315
       Left            =   1800
       TabIndex        =   13
@@ -135,75 +133,45 @@ Begin VB.PropertyPage PPDTPickerGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.ComboBoxW ComboFormat 
+   Begin VB.ComboBox ComboFormat 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   11
       Top             =   1920
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckUpDown 
+   Begin VB.CheckBox CheckUpDown 
+      Caption         =   "UpDown"
       Height          =   285
       Left            =   4200
       TabIndex        =   25
       Top             =   3000
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":01AC
    End
-   Begin VBCCR16.CheckBoxW CheckCheckBox 
+   Begin VB.CheckBox CheckCheckBox 
+      Caption         =   "CheckBox"
       Height          =   285
       Left            =   4200
       TabIndex        =   26
       Top             =   3360
       Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":01D8
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPDTPickerGeneral.pgx":0208
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPDTPickerGeneral.pgx":0236
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   18
-      Top             =   480
-      Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":026E
-   End
-   Begin VBCCR16.CheckBoxW CheckCalendarUseShortestDayNames 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   24
-      Top             =   2640
-      Width           =   2610
-      _ExtentX        =   4604
-      _ExtentY        =   503
-      Caption         =   "PPDTPickerGeneral.pgx":02A2
    End
    Begin VB.Label LabelCalendarAlignment 
       Caption         =   "CalendarAlignment:"

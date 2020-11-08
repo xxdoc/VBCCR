@@ -182,11 +182,13 @@ Private Declare Function GetScrollInfo Lib "user32" (ByVal hWnd As Long, ByVal w
 Private Declare Function LoadCursor Lib "user32" Alias "LoadCursorW" (ByVal hInstance As Long, ByVal lpCursorName As Any) As Long
 Private Declare Function SetCursor Lib "user32" (ByVal hCursor As Long) As Long
 Private Declare Function DragDetect Lib "user32" (ByVal hWnd As Long, ByVal PX As Integer, ByVal PY As Integer) As Long
+Private Declare Function ReleaseCapture Lib "user32" () As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal hDC As Long, ByVal hObject As Long) As Long
 Private Declare Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
 Private Declare Function GetMessagePos Lib "user32" () As Long
 Private Declare Function WindowFromPoint Lib "user32" (ByVal X As Long, ByVal Y As Long) As Long
+Private Declare Function GetCursor Lib "user32" () As Long
 Private Const ICC_STANDARD_CLASSES As Long = &H4000
 Private Const RDW_UPDATENOW As Long = &H100, RDW_INVALIDATE As Long = &H1, RDW_ERASE As Long = &H4, RDW_ALLCHILDREN As Long = &H80
 Private Const HWND_DESKTOP As Long = &H0
@@ -198,7 +200,6 @@ Private Const WS_EX_RTLREADING As Long = &H2000, WS_EX_RIGHT As Long = &H1000, W
 Private Const SW_HIDE As Long = &H0
 Private Const WS_HSCROLL As Long = &H100000
 Private Const WS_VSCROLL As Long = &H200000
-Private Const WM_MOUSEACTIVATE As Long = &H21, MA_ACTIVATE As Long = &H1, MA_ACTIVATEANDEAT As Long = &H2, MA_NOACTIVATE As Long = &H3, MA_NOACTIVATEANDEAT As Long = &H4
 Private Const WM_MOUSEWHEEL As Long = &H20A
 Private Const WM_SETFOCUS As Long = &H7
 Private Const WM_KILLFOCUS As Long = &H8
@@ -228,9 +229,11 @@ Private Const WM_SETREDRAW As Long = &HB
 Private Const WM_CONTEXTMENU As Long = &H7B
 Private Const WM_MEASUREITEM As Long = &H2C
 Private Const WM_DRAWITEM As Long = &H2B, ODT_COMBOBOX As Long = &H3
+Private Const WM_DESTROY As Long = &H2
+Private Const WM_NCDESTROY As Long = &H82
 Private Const WM_VSCROLL As Long = &H115
 Private Const SB_VERT As Long = 1
-Private Const SB_THUMBPOSITION = 4, SB_THUMBTRACK As Long = 5
+Private Const SB_THUMBPOSITION As Long = 4, SB_THUMBTRACK As Long = 5
 Private Const SIF_POS As Long = &H4
 Private Const SIF_TRACKPOS As Long = &H10
 Private Const WM_SETFONT As Long = &H30
@@ -315,7 +318,7 @@ Private ComboBoxListBackColorBrush As Long
 Private ComboBoxIMCHandle As Long
 Private ComboBoxCharCodeCache As Long
 Private ComboBoxMouseOver(0 To 2) As Boolean
-Private ComboBoxDesignMode As Boolean, ComboBoxTopDesignMode As Boolean
+Private ComboBoxDesignMode As Boolean
 Private ComboBoxNewIndex As Long
 Private ComboBoxTopIndex As Long
 Private ComboBoxResizeFrozen As Boolean
@@ -323,6 +326,7 @@ Private ComboBoxInitFieldHeight As Long
 Private ComboBoxDropDownHeightState As Boolean
 Private ComboBoxAutoDragInSel As Boolean, ComboBoxAutoDragIsActive As Boolean
 Private ComboBoxAutoDragSelStart As Integer, ComboBoxAutoDragSelEnd As Integer
+Private UCNoSetFocusFwd As Boolean
 Private DispIDMousePointer As Long
 Private WithEvents PropFont As StdFont
 Attribute PropFont.VB_VarHelpID = -1
@@ -364,7 +368,7 @@ End Sub
 Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByRef riid As OLEGuids.OLECLSID, ByVal dwOptionsSetMask As Long, ByVal dwEnabledOptions As Long)
 End Sub
 
-Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
+Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
 If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     Dim KeyCode As Integer, IsInputKey As Boolean
     KeyCode = wParam And &HFF&
@@ -384,15 +388,8 @@ If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
             ElseIf KeyCode = vbKeyTab Then
                 If IsInputKey = False Then Exit Sub
             End If
-            Dim hWnd As Long
-            hWnd = GetFocus()
-            If hWnd <> 0 Then
-                Select Case hWnd
-                    Case ComboBoxHandle, ComboBoxEditHandle
-                        SendMessage hWnd, wMsg, wParam, ByVal lParam
-                        Handled = True
-                End Select
-            End If
+            SendMessage hWnd, wMsg, wParam, ByVal lParam
+            Handled = True
     End Select
 End If
 End Sub
@@ -421,15 +418,14 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_STANDARD_CLASSES)
-Call SetVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 End Sub
 
 Private Sub UserControl_InitProperties()
 If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer")
 On Error Resume Next
 ComboBoxDesignMode = Not Ambient.UserMode
-ComboBoxTopDesignMode = Not GetTopUserControl(Me).Ambient.UserMode
 On Error GoTo 0
 Set PropFont = Ambient.Font
 PropVisualStyles = True
@@ -469,7 +465,6 @@ Private Sub UserControl_ReadProperties(PropBag As PropertyBag)
 If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer")
 On Error Resume Next
 ComboBoxDesignMode = Not Ambient.UserMode
-ComboBoxTopDesignMode = Not GetTopUserControl(Me).Ambient.UserMode
 On Error GoTo 0
 With PropBag
 Set PropFont = .ReadProperty("Font", Nothing)
@@ -584,8 +579,8 @@ If PropOLEDragMode = vbOLEDragAutomatic Then
     Dim Text As String
     Text = Me.SelText
     Data.SetData StrToVar(Text & vbNullChar), CF_UNICODETEXT
-    Data.SetData StrToVar(Text), vbCFText
-    AllowedEffects = vbDropEffectMove
+    Data.SetData Text, vbCFText
+    AllowedEffects = vbDropEffectCopy Or vbDropEffectMove
     ComboBoxAutoDragIsActive = True
 End If
 RaiseEvent OLEStartDrag(Data, AllowedEffects)
@@ -650,8 +645,8 @@ InProc = False
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroyComboBox
 Call ComCtlsReleaseShellMod
 End Sub
@@ -946,6 +941,7 @@ Select Case Value
     Case Else
         Err.Raise 380
 End Select
+If ComboBoxDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MousePointer"
 End Property
 
@@ -973,6 +969,7 @@ Else
         End If
     End If
 End If
+If ComboBoxDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MouseIcon"
 End Property
 
@@ -1229,7 +1226,7 @@ UserControl.PropertyChanged "UseListForeColor"
 End Property
 
 Public Property Get ListBackColor() As OLE_COLOR
-Attribute ListBackColor.VB_Description = "Returns/sets the background color used to display text and graphics in the control's list portion. This property is ignored at design time."
+Attribute ListBackColor.VB_Description = "Returns/sets the background color used to display text and graphics in the control's list portion."
 ListBackColor = PropListBackColor
 End Property
 
@@ -1244,13 +1241,13 @@ UserControl.PropertyChanged "ListBackColor"
 End Property
 
 Public Property Get ListForeColor() As OLE_COLOR
-Attribute ListForeColor.VB_Description = "Returns/sets the foreground color used to display text and graphics in the control's list portion. This property is ignored at design time."
+Attribute ListForeColor.VB_Description = "Returns/sets the foreground color used to display text and graphics in the control's list portion."
 ListForeColor = PropListForeColor
 End Property
 
 Public Property Let ListForeColor(ByVal Value As OLE_COLOR)
 PropListForeColor = Value
-If ComboBoxHandle <> 0 Then Me.Refresh
+Me.Refresh
 UserControl.PropertyChanged "ListForeColor"
 End Property
 
@@ -1327,11 +1324,11 @@ Select Case Value
             Err.Raise Number:=382, Description:="DrawMode property is read-only at run time"
         Else
             PropDrawMode = Value
+            If ComboBoxHandle <> 0 Then Call ReCreateComboBox
         End If
     Case Else
         Err.Raise 380
 End Select
-If ComboBoxHandle <> 0 Then Call ReCreateComboBox
 UserControl.PropertyChanged "DrawMode"
 End Property
 
@@ -1376,6 +1373,7 @@ End Property
 Public Sub AddItem(ByVal Item As String, Optional ByVal Index As Variant)
 Attribute AddItem.VB_Description = "Adds an item to the combo box."
 If ComboBoxHandle <> 0 Then
+    If StrPtr(Item) = 0 Then Item = ""
     Dim RetVal As Long
     If IsMissing(Index) = True Then
         RetVal = SendMessage(ComboBoxHandle, CB_ADDSTRING, 0, ByVal StrPtr(Item))
@@ -1467,6 +1465,9 @@ If ComboBoxHandle <> 0 Then
             SendMessage ComboBoxHandle, CB_INSERTSTRING, Index, ByVal StrPtr(Value)
             SendMessage ComboBoxHandle, CB_SETCURSEL, SelIndex, ByVal 0&
             SendMessage ComboBoxHandle, CB_SETITEMDATA, Index, ByVal ItemData
+            On Error Resume Next
+            UserControl.Extender.DataChanged = True
+            On Error GoTo 0
         Else
             Err.Raise 5
         End If
@@ -1586,6 +1587,10 @@ If ComboBoxDesignMode = False Then
         Call ComCtlsSetSubclass(UserControl.hWnd, Me, 4)
     End If
 Else
+    If ComboBoxHandle <> 0 Then
+        If ComboBoxListBackColorBrush = 0 Then ComboBoxListBackColorBrush = CreateSolidBrush(WinColor(PropListBackColor))
+        Call ComCtlsSetSubclass(ComboBoxHandle, Me, 5)
+    End If
     If PropStyle = CboStyleDropDownList Then
         If ComboBoxHandle <> 0 Then
             Dim Buffer As String
@@ -1651,7 +1656,7 @@ If ComboBoxDesignMode = False Then
         End If
         .ListIndex = ListIndex
         .TopIndex = TopIndex
-        .Text = Text
+        If PropStyle <> CboStyleDropDownList Then .Text = Text
         If ComboBoxEditHandle <> 0 Then SendMessage ComboBoxEditHandle, EM_SETSEL, SelStart, ByVal SelEnd
         If Not DroppedWidth = CB_ERR Then SendMessage ComboBoxHandle, CB_SETDROPPEDWIDTH, DroppedWidth, ByVal 0&
         If FieldHeightCustomized = True Then SendMessage ComboBoxHandle, CB_SETITEMHEIGHT, -1, ByVal FieldHeight
@@ -1757,6 +1762,7 @@ End Property
 Public Property Let SelText(ByVal Value As String)
 If ComboBoxHandle <> 0 Then
     If ComboBoxEditHandle <> 0 Then
+        If StrPtr(Value) = 0 Then Value = ""
         SendMessage ComboBoxEditHandle, EM_REPLACESEL, 0, ByVal StrPtr(Value)
     Else
         Err.Raise 380
@@ -2064,41 +2070,26 @@ Select Case dwRefData
         ISubclass_Message = WindowProcList(hWnd, wMsg, wParam, lParam)
     Case 4
         ISubclass_Message = WindowProcUserControl(hWnd, wMsg, wParam, lParam)
+    Case 5
+        ISubclass_Message = WindowProcControlDesignMode(hWnd, wMsg, wParam, lParam)
 End Select
 End Function
 
 Private Function WindowProcControl(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 Select Case wMsg
     Case WM_SETFOCUS
-        If wParam <> UserControl.hWnd Then SetFocusAPI UserControl.hWnd: Exit Function
+        If wParam <> UserControl.hWnd And (wParam <> ComboBoxEditHandle Or ComboBoxEditHandle = 0) Then SetFocusAPI UserControl.hWnd: Exit Function
         Call ActivateIPAO(Me)
     Case WM_KILLFOCUS
         Call DeActivateIPAO
-    Case WM_MOUSEACTIVATE
-        Static InProc As Boolean
-        If ComboBoxTopDesignMode = False And GetFocus() <> ComboBoxHandle And (GetFocus() <> ComboBoxEditHandle Or ComboBoxEditHandle = 0) Then
-            If InProc = True Then WindowProcControl = MA_ACTIVATEANDEAT: Exit Function
-            Select Case HiWord(lParam)
-                Case WM_LBUTTONDOWN
-                    On Error Resume Next
-                    With UserControl
-                    If .Extender.CausesValidation = True Then
-                        InProc = True
-                        Call ComCtlsTopParentValidateControls(Me)
-                        InProc = False
-                        If Err.Number = 380 Then
-                            WindowProcControl = MA_ACTIVATEANDEAT
-                        Else
-                            SetFocusAPI .hWnd
-                            WindowProcControl = MA_NOACTIVATE
-                        End If
-                    Else
-                        SetFocusAPI .hWnd
-                        WindowProcControl = MA_NOACTIVATE
-                    End If
-                    End With
-                    On Error GoTo 0
-                    Exit Function
+    Case WM_LBUTTONDOWN
+        If ComboBoxEditHandle = 0 Then
+            If GetFocus() <> hWnd Then UCNoSetFocusFwd = True: SetFocusAPI UserControl.hWnd: UCNoSetFocusFwd = False
+        Else
+            Select Case GetFocus()
+                Case hWnd, ComboBoxEditHandle
+                Case Else
+                    UCNoSetFocusFwd = True: SetFocusAPI UserControl.hWnd: UCNoSetFocusFwd = False
             End Select
         End If
     Case WM_SETCURSOR
@@ -2153,7 +2144,19 @@ Select Case wMsg
         End If
     Case WM_UNICHAR
         If PropStyle = CboStyleDropDownList Then
-            If wParam = UNICODE_NOCHAR Then WindowProcControl = 1 Else SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
+            If wParam = UNICODE_NOCHAR Then
+                WindowProcControl = 1
+            Else
+                Dim UTF16 As String
+                UTF16 = UTF32CodePoint_To_UTF16(wParam)
+                If Len(UTF16) = 1 Then
+                    SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(UTF16)), ByVal lParam
+                ElseIf Len(UTF16) = 2 Then
+                    SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Left$(UTF16, 1))), ByVal lParam
+                    SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Right$(UTF16, 1))), ByVal lParam
+                End If
+                WindowProcControl = 0
+            End If
             Exit Function
         End If
     Case WM_IME_CHAR
@@ -2166,12 +2169,12 @@ Select Case wMsg
             Dim P As POINTAPI, Handled As Boolean
             P.X = Get_X_lParam(lParam)
             P.Y = Get_Y_lParam(lParam)
-            If P.X > 0 And P.Y > 0 Then
-                ScreenToClient ComboBoxHandle, P
-                RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P.Y, vbPixels, vbContainerPosition))
-            ElseIf P.X = -1 And P.Y = -1 Then
+            If P.X = -1 And P.Y = -1 Then
                 ' If the user types SHIFT + F10 then the X and Y coordinates are -1.
                 RaiseEvent ContextMenu(Handled, -1, -1)
+            Else
+                ScreenToClient ComboBoxHandle, P
+                RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P.Y, vbPixels, vbContainerPosition))
             End If
             If Handled = True Then Exit Function
         End If
@@ -2241,7 +2244,7 @@ End Function
 Private Function WindowProcEdit(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 Select Case wMsg
     Case WM_SETFOCUS
-        If wParam <> ComboBoxHandle Then SetFocusAPI UserControl.hWnd: Exit Function
+        If wParam <> UserControl.hWnd And wParam <> ComboBoxHandle Then SetFocusAPI UserControl.hWnd: Exit Function
         Call ActivateIPAO(Me)
     Case WM_KILLFOCUS
         Call DeActivateIPAO
@@ -2299,7 +2302,19 @@ Select Case wMsg
             wParam = CIntToUInt(KeyChar)
         End If
     Case WM_UNICHAR
-        If wParam = UNICODE_NOCHAR Then WindowProcEdit = 1 Else SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
+        If wParam = UNICODE_NOCHAR Then
+            WindowProcEdit = 1
+        Else
+            Dim UTF16 As String
+            UTF16 = UTF32CodePoint_To_UTF16(wParam)
+            If Len(UTF16) = 1 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(UTF16)), ByVal lParam
+            ElseIf Len(UTF16) = 2 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Left$(UTF16, 1))), ByVal lParam
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Right$(UTF16, 1))), ByVal lParam
+            End If
+            WindowProcEdit = 0
+        End If
         Exit Function
     Case WM_INPUTLANGCHANGE
         Call ComCtlsSetIMEMode(hWnd, ComboBoxIMCHandle, PropIMEMode)
@@ -2316,20 +2331,30 @@ Select Case wMsg
             ClientToScreen ComboBoxEditHandle, P2
             If DragDetect(ComboBoxEditHandle, CUIntToInt(P2.X And &HFFFF&), CUIntToInt(P2.Y And &HFFFF&)) <> 0 Then
                 Me.OLEDrag
+                WindowProcEdit = 0
+            Else
+                WindowProcEdit = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
+                ReleaseCapture
             End If
             Exit Function
+        Else
+            Select Case GetFocus()
+                Case hWnd, ComboBoxHandle
+                Case Else
+                    UCNoSetFocusFwd = True: SetFocusAPI UserControl.hWnd: UCNoSetFocusFwd = False
+            End Select
         End If
     Case WM_CONTEXTMENU
         If wParam = hWnd Then
             Dim P3 As POINTAPI, Handled As Boolean
             P3.X = Get_X_lParam(lParam)
             P3.Y = Get_Y_lParam(lParam)
-            If P3.X > 0 And P3.Y > 0 Then
-                ScreenToClient hWnd, P3
-                RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P3.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P3.Y, vbPixels, vbContainerPosition))
-            ElseIf P3.X = -1 And P3.Y = -1 Then
+            If P3.X = -1 And P3.Y = -1 Then
                 ' If the user types SHIFT + F10 then the X and Y coordinates are -1.
                 RaiseEvent ContextMenu(Handled, -1, -1)
+            Else
+                ScreenToClient hWnd, P3
+                RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P3.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P3.Y, vbPixels, vbContainerPosition))
             End If
             If Handled = True Then Exit Function
         End If
@@ -2463,6 +2488,15 @@ Select Case wMsg
                 Call CheckAutoSelect
                 RaiseEvent Change
             Case CBN_DROPDOWN
+                If PropStyle <> CboStyleDropDownList And ComboBoxEditHandle <> 0 Then
+                    If GetCursor() = 0 Then
+                        ' The mouse cursor can be hidden when showing the drop-down list upon a change event.
+                        ' Reason is that the edit control hides the cursor and a following mouse move will show it again.
+                        ' However, the drop-down list will set a mouse capture and thus the cursor keeps hidden.
+                        ' Solution is to refresh the cursor by sending a WM_SETCURSOR.
+                        Call RefreshMousePointer(lParam)
+                    End If
+                End If
                 If PropDrawMode = CboDrawModeOwnerDrawVariable Then Call CheckDropDownHeight(True)
                 RaiseEvent DropDown
             Case CBN_CLOSEUP
@@ -2495,5 +2529,18 @@ Select Case wMsg
         End If
 End Select
 WindowProcUserControl = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
-If wMsg = WM_SETFOCUS Then SetFocusAPI ComboBoxHandle
+If wMsg = WM_SETFOCUS And UCNoSetFocusFwd = False Then SetFocusAPI ComboBoxHandle
+End Function
+
+Private Function WindowProcControlDesignMode(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Select Case wMsg
+    Case WM_CTLCOLORLISTBOX
+        WindowProcControlDesignMode = WindowProcControl(hWnd, wMsg, wParam, lParam)
+        Exit Function
+End Select
+WindowProcControlDesignMode = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
+Select Case wMsg
+    Case WM_DESTROY, WM_NCDESTROY
+        Call ComCtlsRemoveSubclass(hWnd)
+End Select
 End Function

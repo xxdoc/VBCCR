@@ -9,87 +9,71 @@ Begin VB.PropertyPage PPLinkLabelGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3450
    ScaleWidth      =   5925
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
       Height          =   285
       Left            =   4200
       TabIndex        =   8
       Top             =   480
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":0000
    End
-   Begin VBCCR16.CheckBoxW CheckShowTips 
+   Begin VB.CheckBox CheckShowTips 
+      Caption         =   "ShowTips"
       Height          =   285
       Left            =   4200
       TabIndex        =   14
       Top             =   2640
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":0034
    End
-   Begin VBCCR16.CheckBoxW CheckTransparent 
+   Begin VB.CheckBox CheckTransparent 
+      Caption         =   "Transparent"
       Height          =   285
       Left            =   4200
       TabIndex        =   13
       Top             =   2280
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":0064
    End
-   Begin VBCCR16.CheckBoxW CheckUseMnemonic 
+   Begin VB.CheckBox CheckUseMnemonic 
+      Caption         =   "UseMnemonic"
       Height          =   285
       Left            =   4200
       TabIndex        =   12
       Top             =   1920
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":009A
    End
-   Begin VBCCR16.CheckBoxW CheckUnderlineCold 
+   Begin VB.CheckBox CheckUnderlineCold 
+      Caption         =   "UnderlineCold"
       Height          =   285
       Left            =   4200
       TabIndex        =   11
       Top             =   1560
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":00D0
    End
-   Begin VBCCR16.CheckBoxW CheckUnderlineHot 
+   Begin VB.CheckBox CheckUnderlineHot 
+      Caption         =   "UnderlineHot"
       Height          =   285
       Left            =   4200
       TabIndex        =   10
       Top             =   1200
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":010A
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   3
       Top             =   480
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboAlignment 
+   Begin VB.ComboBox ComboAlignment 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   7
       Top             =   1560
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextCaption 
+   Begin VBCCR17.TextBoxW TextCaption 
       Height          =   675
       Left            =   1800
       TabIndex        =   5
@@ -100,35 +84,29 @@ Begin VB.PropertyPage PPLinkLabelGeneral
       MultiLine       =   -1  'True
       ScrollBars      =   2
    End
-   Begin VBCCR16.CheckBoxW CheckHotTracking 
+   Begin VB.CheckBox CheckHotTracking 
+      Caption         =   "HotTracking"
       Height          =   285
       Left            =   4200
       TabIndex        =   9
       Top             =   840
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":0142
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":0178
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPLinkLabelGeneral.pgx":01A6
    End
    Begin VB.Label LabelMousePointer 
       Caption         =   "MousePointer:"

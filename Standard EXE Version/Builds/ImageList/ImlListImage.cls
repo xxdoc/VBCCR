@@ -41,6 +41,10 @@ Attribute Key.VB_Description = "Returns the key used in the collection."
 Key = PropKey
 End Property
 
+Public Property Let Key(ByVal Value As String)
+ShadowImageList.ListImages.FChangeKey PropIndex, PropKey, Value
+End Property
+
 Public Property Get Tag() As Variant
 Attribute Tag.VB_Description = "Stores any extra data needed for your program."
 If IsEmpty(PropTag) Then
@@ -67,6 +71,10 @@ End Property
 Public Property Get Picture() As IPictureDisp
 Attribute Picture.VB_Description = "Returns/sets the image picture."
 Set Picture = PropPicture
+End Property
+
+Public Property Let Picture(ByVal Value As IPictureDisp)
+Err.Raise Number:=383, Description:="Property is read-only"
 End Property
 
 Public Property Set Picture(ByVal Value As IPictureDisp)

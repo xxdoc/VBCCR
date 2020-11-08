@@ -10,41 +10,46 @@ Begin VB.PropertyPage PPCoolBarBands
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   4875
    ScaleWidth      =   6225
-   Begin VBCCR16.CheckBoxW CheckHideCaption 
+   Begin VBCCR17.TextBoxW TextToolTipText 
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   29
+      Top             =   4440
+      Width           =   1815
+      _ExtentX        =   0
+      _ExtentY        =   0
+      BackColor       =   -2147483633
+      Enabled         =   0   'False
+   End
+   Begin VB.CheckBox CheckHideCaption 
+      Caption         =   "&HideCaption"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   3360
       TabIndex        =   48
       Top             =   3960
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":0000
    End
-   Begin VBCCR16.CheckBoxW CheckUseChevron 
+   Begin VB.CheckBox CheckUseChevron 
+      Caption         =   "UseC&hevron"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   4800
       TabIndex        =   47
       Top             =   3600
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":0038
    End
-   Begin VBCCR16.ComboBoxW ComboGripper 
+   Begin VB.ComboBox ComboGripper 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   27
       Top             =   4080
       Width           =   1815
-      _ExtentX        =   3201
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextIdealWidth 
+   Begin VBCCR17.TextBoxW TextIdealWidth 
       Height          =   315
       Left            =   1200
       TabIndex        =   25
@@ -61,41 +66,33 @@ Begin VB.PropertyPage PPCoolBarBands
       TabIndex        =   38
       Top             =   2040
       Width           =   2775
-      Begin VBCCR16.CommandButtonW CommandForeColor 
+      Begin VB.CommandButton CommandForeColor 
+         BackColor       =   &H80000012&
+         Enabled         =   0   'False
          Height          =   225
          Left            =   1200
+         Style           =   1  'Graphical
          TabIndex        =   43
          Top             =   720
          Width           =   495
-         _ExtentX        =   0
-         _ExtentY        =   0
-         VisualStyles    =   0   'False
-         BackColor       =   -2147483630
-         Enabled         =   0   'False
-         Style           =   1
       End
-      Begin VBCCR16.CommandButtonW CommandBackColor 
+      Begin VB.CommandButton CommandBackColor 
+         Enabled         =   0   'False
          Height          =   225
          Left            =   1200
+         Style           =   1  'Graphical
          TabIndex        =   41
          Top             =   360
          Width           =   495
-         _ExtentX        =   0
-         _ExtentY        =   0
-         VisualStyles    =   0   'False
-         Enabled         =   0   'False
-         Style           =   1
       End
-      Begin VBCCR16.CheckBoxW CheckUseCoolBarColors 
+      Begin VB.CheckBox CheckUseCoolBarColors 
+         Caption         =   "UseCoolBarCo&lors"
+         Enabled         =   0   'False
          Height          =   285
          Left            =   120
          TabIndex        =   39
          Top             =   0
          Width           =   1815
-         _ExtentX        =   0
-         _ExtentY        =   0
-         Enabled         =   0   'False
-         Caption         =   "PPCoolBarBands.pgx":006E
       End
       Begin VB.Label LabelBackColor 
          Caption         =   "&BackColor:"
@@ -133,16 +130,14 @@ Begin VB.PropertyPage PPCoolBarBands
          TabStop         =   0   'False
          Top             =   600
          Width           =   1035
-         Begin VBCCR16.CommandButtonW CommandPictureNo 
+         Begin VB.CommandButton CommandPictureNo 
+            Caption         =   "No &Picture"
+            Enabled         =   0   'False
             Height          =   315
             Left            =   0
             TabIndex        =   37
             Top             =   0
             Width           =   1035
-            _ExtentX        =   0
-            _ExtentY        =   0
-            Enabled         =   0   'False
-            Caption         =   "PPCoolBarBands.pgx":00B0
          End
       End
       Begin VB.PictureBox PictureCommandPictureBrowse 
@@ -156,28 +151,24 @@ Begin VB.PropertyPage PPCoolBarBands
          TabStop         =   0   'False
          Top             =   240
          Width           =   1035
-         Begin VBCCR16.CommandButtonW CommandPictureBrowse 
+         Begin VB.CommandButton CommandPictureBrowse 
+            Caption         =   "Br&owse..."
+            Enabled         =   0   'False
             Height          =   315
             Left            =   0
             TabIndex        =   35
             Top             =   0
             Width           =   1035
-            _ExtentX        =   0
-            _ExtentY        =   0
-            Enabled         =   0   'False
-            Caption         =   "PPCoolBarBands.pgx":00E6
          End
       End
-      Begin VBCCR16.CheckBoxW CheckUseCoolBarPicture 
+      Begin VB.CheckBox CheckUseCoolBarPicture 
+         Caption         =   "&UseCoolBarPicture"
+         Enabled         =   0   'False
          Height          =   285
          Left            =   120
          TabIndex        =   31
          Top             =   0
          Width           =   1815
-         _ExtentX        =   0
-         _ExtentY        =   0
-         Enabled         =   0   'False
-         Caption         =   "PPCoolBarBands.pgx":011A
       End
       Begin VB.Label LabelPictureType 
          BorderStyle     =   1  'Fixed Single
@@ -199,7 +190,7 @@ Begin VB.PropertyPage PPCoolBarBands
          Width           =   975
       End
    End
-   Begin VBCCR16.TextBoxW TextMinHeight 
+   Begin VBCCR17.TextBoxW TextMinHeight 
       Height          =   315
       Left            =   1200
       TabIndex        =   23
@@ -210,7 +201,7 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextMinWidth 
+   Begin VBCCR17.TextBoxW TextMinWidth 
       Height          =   315
       Left            =   1200
       TabIndex        =   21
@@ -221,7 +212,7 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextCX 
+   Begin VBCCR17.TextBoxW TextCX 
       Height          =   315
       Left            =   1200
       TabIndex        =   19
@@ -232,75 +223,63 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.ComboBoxW ComboChild 
+   Begin VB.ComboBox ComboChild 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   7
       Top             =   480
       Width           =   4815
-      _ExtentX        =   8493
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckFixedBackground 
+   Begin VB.CheckBox CheckFixedBackground 
+      Caption         =   "Fi&xedBackground"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   3360
       TabIndex        =   49
       Top             =   4320
       Width           =   2655
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":015E
    End
-   Begin VBCCR16.CheckBoxW CheckChildEdge 
+   Begin VB.CheckBox CheckChildEdge 
+      Caption         =   "Child&Edge"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   3360
       TabIndex        =   46
       Top             =   3600
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":019E
    End
-   Begin VBCCR16.CheckBoxW CheckVisible 
+   Begin VB.CheckBox CheckVisible 
+      Caption         =   "&Visible"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   4800
       TabIndex        =   45
       Top             =   3240
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":01D2
    End
-   Begin VBCCR16.CheckBoxW CheckNewRow 
+   Begin VB.CheckBox CheckNewRow 
+      Caption         =   "NewR&ow"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   3360
       TabIndex        =   44
       Top             =   3240
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":0202
    End
-   Begin VBCCR16.ComboBoxW ComboStyle 
+   Begin VB.ComboBox ComboStyle 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   15
       Top             =   1920
       Width           =   1815
-      _ExtentX        =   3201
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextTag 
+   Begin VBCCR17.TextBoxW TextTag 
       Height          =   315
       Left            =   1200
       TabIndex        =   13
@@ -311,7 +290,7 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextImage 
+   Begin VBCCR17.TextBoxW TextImage 
       Height          =   315
       Left            =   1200
       TabIndex        =   17
@@ -322,7 +301,7 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextCaption 
+   Begin VBCCR17.TextBoxW TextCaption 
       Height          =   315
       Left            =   1200
       TabIndex        =   9
@@ -333,7 +312,7 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextKey 
+   Begin VBCCR17.TextBoxW TextKey 
       Height          =   315
       Left            =   1200
       TabIndex        =   11
@@ -344,16 +323,29 @@ Begin VB.PropertyPage PPCoolBarBands
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.CommandButtonW CommandBack 
+   Begin VB.CommandButton CommandBack 
+      Caption         =   "3"
+      Enabled         =   0   'False
+      BeginProperty Font 
+         Name            =   "Marlett"
+         Size            =   9
+         Charset         =   2
+         Weight          =   500
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   315
       Left            =   2160
       TabIndex        =   2
       ToolTipText     =   "Select Previous Band"
       Top             =   120
       Width           =   300
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+   End
+   Begin VB.CommandButton CommandNext 
+      Caption         =   "4"
+      Enabled         =   0   'False
+      BeginProperty Font 
          Name            =   "Marlett"
          Size            =   9
          Charset         =   2
@@ -362,31 +354,14 @@ Begin VB.PropertyPage PPCoolBarBands
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":0230
-   End
-   Begin VBCCR16.CommandButtonW CommandNext 
       Height          =   315
       Left            =   2460
       TabIndex        =   3
       ToolTipText     =   "Select Next Band"
       Top             =   120
       Width           =   300
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Marlett"
-         Size            =   9
-         Charset         =   2
-         Weight          =   500
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Enabled         =   0   'False
-      Caption         =   "PPCoolBarBands.pgx":0252
    End
-   Begin VBCCR16.TextBoxW TextIndex 
+   Begin VBCCR17.TextBoxW TextIndex 
       Height          =   315
       Left            =   1200
       TabIndex        =   1
@@ -395,41 +370,26 @@ Begin VB.PropertyPage PPCoolBarBands
       _ExtentX        =   0
       _ExtentY        =   0
       BackColor       =   -2147483633
-      Text            =   "PPCoolBarBands.pgx":0274
+      Text            =   "PPCoolBarBands.pgx":0000
       Locked          =   -1  'True
    End
-   Begin VBCCR16.CommandButtonW CommandRemove 
+   Begin VB.CommandButton CommandRemove 
+      Caption         =   "&Remove..."
       Height          =   315
       Left            =   4980
       TabIndex        =   5
       ToolTipText     =   "Remove Selected Band"
       Top             =   120
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarBands.pgx":02A0
    End
-   Begin VBCCR16.CommandButtonW CommandInsert 
+   Begin VB.CommandButton CommandInsert 
+      Caption         =   "I&nsert..."
       Height          =   315
       Left            =   3840
       TabIndex        =   4
       ToolTipText     =   "Insert Band"
       Top             =   120
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPCoolBarBands.pgx":02D4
-   End
-   Begin VBCCR16.TextBoxW TextToolTipText 
-      Height          =   315
-      Left            =   1200
-      TabIndex        =   29
-      Top             =   4440
-      Width           =   1815
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
    End
    Begin VB.Label LabelToolTipText 
       Caption         =   "ToolTi&pText:"
@@ -607,7 +567,6 @@ On Error GoTo 0
 If CurrIndex > 0 Then
     With PropShadowBands(CurrIndex)
     .Caption = TextCaption.Text
-    .Key = TextKey.Text
     .Tag = TextTag.Text
     .ChildName = IIf(ComboChild.ListIndex > 0, ComboChild.List(ComboChild.ListIndex), vbNullString)
     Dim i As Long
@@ -641,15 +600,13 @@ If CurrIndex > 0 Then
     .FixedBackground = CBool(CheckFixedBackground.Value = vbChecked)
     End With
     With PropertyPage.SelectedControls(0)
-    If .Bands.Count > 0 Then
-        For i = 1 To .Bands.Count
-            Set .Bands(i).Child = Nothing
-        Next i
-    End If
+    For i = 1 To .Bands.Count
+        Set .Bands(i).Child = Nothing
+    Next i
     .Bands.Clear
     For i = 0 To UBound(PropShadowBands())
         If i > 0 Then
-            With .Bands.Add(i, PropShadowBands(i).Key, PropShadowBands(i).Caption, PropShadowBands(i).Image, PropShadowBands(i).NewRow, PropShadowBands(i).ChildName, PropShadowBands(i).Visible)
+            With .Bands.Add(i, IIf(i <> CurrIndex, PropShadowBands(i).Key, vbNullString), PropShadowBands(i).Caption, PropShadowBands(i).Image, PropShadowBands(i).NewRow, PropShadowBands(i).ChildName, PropShadowBands(i).Visible)
             .Tag = PropShadowBands(i).Tag
             .Style = PropShadowBands(i).Style
             If PropShadowBands(i).Style <> CbrBandStyleFixedSize Then .Width = PropShadowBands(i).Width
@@ -677,6 +634,20 @@ If CurrIndex > 0 Then
     TextIdealWidth.Text = CStr(.IdealWidth)
     CheckNewRow.Value = IIf(.NewRow = True, vbChecked, vbUnchecked)
     End With
+    If Not TextKey.Text = vbNullString Then
+        If .Bands.Exists(TextKey.Text) = True Then
+            .Bands(CurrIndex).Key = PropShadowBands(CurrIndex).Key
+            MsgBox "This key is already associated with an element of this collection.", vbCritical + vbOKOnly
+            FreezeChanged = True
+            TextKey.Text = PropShadowBands(CurrIndex).Key
+            FreezeChanged = False
+        Else
+            PropShadowBands(CurrIndex).Key = TextKey.Text
+            .Bands(CurrIndex).Key = PropShadowBands(CurrIndex).Key
+        End If
+    Else
+        PropShadowBands(CurrIndex).Key = vbNullString
+    End If
     End With
 End If
 Call PropertyPage_SelectionChanged

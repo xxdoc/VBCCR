@@ -1,22 +1,44 @@
 VERSION 5.00
 Begin VB.Form VirtualControlsForm 
    Caption         =   "VirtualControls Demo"
-   ClientHeight    =   3525
+   ClientHeight    =   3945
    ClientLeft      =   120
    ClientTop       =   450
-   ClientWidth     =   8175
+   ClientWidth     =   11490
    KeyPreview      =   -1  'True
-   ScaleHeight     =   3525
-   ScaleWidth      =   8175
+   ScaleHeight     =   3945
+   ScaleWidth      =   11490
    StartUpPosition =   3  'Windows Default
+   Begin ComCtlsDemo.VListBox VListBox1 
+      Height          =   2985
+      Left            =   8040
+      TabIndex        =   1
+      Top             =   240
+      Width           =   3255
+      _ExtentX        =   5741
+      _ExtentY        =   5265
+      BackColor       =   -2147483643
+      ForeColor       =   -2147483640
+   End
+   Begin ComCtlsDemo.VirtualCombo VirtualCombo1 
+      Height          =   315
+      Left            =   8040
+      TabIndex        =   2
+      Top             =   3360
+      Width           =   3255
+      _ExtentX        =   5741
+      _ExtentY        =   556
+      Style           =   2
+      Text            =   "VirtualControlsForm.frx":0000
+   End
    Begin ComCtlsDemo.ListView ListView1 
-      Height          =   3015
+      Height          =   3495
       Left            =   240
       TabIndex        =   0
       Top             =   240
       Width           =   7695
       _ExtentX        =   13573
-      _ExtentY        =   5318
+      _ExtentY        =   6165
       View            =   3
       AllowColumnReorder=   -1  'True
       MultiSelect     =   -1  'True
@@ -42,9 +64,10 @@ ForeColor As OLE_COLOR
 Checked As Boolean
 End Type
 Private VirtualLvwItems(1 To 100000, 0 To 3) As VirtualLvwItemStruct
+Private VirtualItems(0 To (100000 - 1)) As String
 
 Private Sub Form_Load()
-Call SetupVisualStyles(Me)
+Call SetupVisualStylesFixes(Me)
 ListView1.VirtualDisabledInfos = 0 ' None disabled info
 Set ListView1.SmallIcons = MainForm.ImageList1
 Dim i As Long, j As Long
@@ -77,6 +100,11 @@ With ListView1.ColumnHeaders
 .Add , , "Col4"
 End With
 ListView1.VirtualItemCount = 100000
+For i = 0 To 100000 - 1
+    VirtualItems(i) = "item" & i
+Next i
+VListBox1.ListCount = 100000
+VirtualCombo1.ListCount = 100000
 End Sub
 
 Private Sub ListView1_FindVirtualItem(ByVal StartIndex As Long, ByVal SearchText As String, ByVal Partial As Boolean, ByVal Wrap As Boolean, FoundIndex As Long)
@@ -99,8 +127,8 @@ If FoundIndex = 0 And Wrap = True Then
 End If
 End Sub
 
-Private Sub ListView1_GetVirtualItem(ByVal Index As Long, ByVal SubItemIndex As Long, ByVal VirtualProperty As LvwVirtualPropertyConstants, Value As Variant)
-With VirtualLvwItems(Index, SubItemIndex)
+Private Sub ListView1_GetVirtualItem(ByVal ItemIndex As Long, ByVal SubItemIndex As Long, ByVal VirtualProperty As LvwVirtualPropertyConstants, Value As Variant)
+With VirtualLvwItems(ItemIndex, SubItemIndex)
 Select Case VirtualProperty
     Case LvwVirtualPropertyText
         Value = .Text
@@ -128,4 +156,62 @@ Private Sub ListView1_AfterLabelEdit(Cancel As Boolean, NewString As String)
 Dim ListItem As LvwListItem
 Set ListItem = ListView1.SelectedItem
 If Not ListItem Is Nothing Then VirtualLvwItems(ListItem.Index, 0).Text = NewString
+End Sub
+
+Private Sub VListBox1_GetVirtualItem(ByVal Item As Long, Text As String)
+Text = VirtualItems(Item) ' Item is zero-based
+End Sub
+
+Private Sub VListBox1_FindVirtualItem(ByVal StartIndex As Long, ByVal SearchText As String, ByVal Partial As Boolean, FoundIndex As Long)
+If VListBox1.ListCount = 0 Then Exit Sub
+Dim i As Long
+For i = StartIndex + 1 To VListBox1.ListCount - 1
+    If StrComp(Left$(VirtualItems(i), Len(SearchText)), SearchText, vbTextCompare) = 0 Then
+        FoundIndex = i
+        Exit For
+    End If
+Next i
+If FoundIndex = -1 Then
+    For i = 0 To StartIndex - 1
+        If StrComp(Left$(VirtualItems(i), Len(SearchText)), SearchText, vbTextCompare) = 0 Then
+            FoundIndex = i
+            Exit For
+        End If
+    Next i
+End If
+End Sub
+
+Private Sub VListBox1_IncrementalSearch(ByVal SearchString As String, ByVal StartIndex As Long, FoundIndex As Long)
+Dim SearchChar As String
+SearchChar = LCase$(Right$(SearchString, 1))
+FoundIndex = VListBox1.FindItem(SearchChar, StartIndex, True) ' Redirects to FindVirtualItem event
+End Sub
+
+Private Sub VirtualCombo1_GetVirtualItem(ByVal Item As Long, Text As String)
+Text = VirtualItems(Item) ' Item is zero-based
+End Sub
+
+Private Sub VirtualCombo1_FindVirtualItem(ByVal StartIndex As Long, ByVal SearchText As String, ByVal Partial As Boolean, FoundIndex As Long)
+If VirtualCombo1.ListCount = 0 Then Exit Sub
+Dim i As Long
+For i = StartIndex + 1 To VirtualCombo1.ListCount - 1
+    If StrComp(Left$(VirtualItems(i), Len(SearchText)), SearchText, vbTextCompare) = 0 Then
+        FoundIndex = i
+        Exit For
+    End If
+Next i
+If FoundIndex = -1 Then
+    For i = 0 To StartIndex - 1
+        If StrComp(Left$(VirtualItems(i), Len(SearchText)), SearchText, vbTextCompare) = 0 Then
+            FoundIndex = i
+            Exit For
+        End If
+    Next i
+End If
+End Sub
+
+Private Sub VirtualCombo1_IncrementalSearch(ByVal SearchString As String, ByVal StartIndex As Long, FoundIndex As Long)
+Dim SearchChar As String
+SearchChar = LCase$(Right$(SearchString, 1))
+FoundIndex = VirtualCombo1.FindItem(SearchChar, StartIndex, True) ' Redirects to FindVirtualItem event
 End Sub

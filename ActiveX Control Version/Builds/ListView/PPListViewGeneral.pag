@@ -9,59 +9,88 @@ Begin VB.PropertyPage PPListViewGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   7425
    ScaleWidth      =   6450
-   Begin VBCCR16.ListBoxW ListVirtualDisabledInfos 
+   Begin VB.CheckBox CheckShowColumnTips 
+      Caption         =   "ShowColumnTips"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   49
+      Top             =   4320
+      Width           =   2160
+   End
+   Begin VB.ListBox ListVirtualDisabledInfos 
       Height          =   735
       Left            =   1800
+      Style           =   1  'Checkbox
       TabIndex        =   32
       Top             =   5520
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   1296
-      BackColor       =   -2147483643
-      ForeColor       =   -2147483640
-      Style           =   1
    End
-   Begin VBCCR16.ComboBoxW ComboIMEMode 
+   Begin VBCCR17.TextBoxW TextVirtualItemCount 
       Height          =   315
       Left            =   1800
+      TabIndex        =   30
+      Top             =   5160
+      Width           =   2235
+      _ExtentX        =   0
+      _ExtentY        =   0
+   End
+   Begin VB.CheckBox CheckVirtualMode 
+      Caption         =   "VirtualMode"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   60
+      Top             =   6960
+      Width           =   2160
+   End
+   Begin VB.ComboBox ComboHeaderMousePointer 
+      Height          =   315
+      Left            =   1800
+      Style           =   2  'Dropdown List
+      TabIndex        =   8
+      Top             =   1200
+      Width           =   2235
+   End
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   33
+      Top             =   480
+      Width           =   2160
+   End
+   Begin VB.ComboBox ComboIMEMode 
+      Height          =   315
+      Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   28
       Top             =   4800
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckAutoSelectFirstItem 
+   Begin VB.CheckBox CheckAutoSelectFirstItem 
+      Caption         =   "AutoSelectFirstItem"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   59
+      Top             =   6720
+      Width           =   2160
+   End
+   Begin VB.ComboBox ComboVisualTheme 
+      Height          =   315
+      Left            =   1800
+      Style           =   2  'Dropdown List
+      TabIndex        =   10
+      Top             =   1560
+      Width           =   2235
+   End
+   Begin VB.CheckBox CheckUseColumnFilterBar 
+      Caption         =   "UseColumnFilterBar"
       Height          =   225
       Left            =   4200
       TabIndex        =   58
       Top             =   6480
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboVisualTheme 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   10
-      Top             =   1560
-      Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
-   End
-   Begin VBCCR16.CheckBoxW CheckUseColumnFilterBar 
-      Height          =   225
-      Left            =   4200
-      TabIndex        =   57
-      Top             =   6240
-      Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0046
-   End
-   Begin VBCCR16.TextBoxW TextGroupSubsetCount 
+   Begin VBCCR17.TextBoxW TextGroupSubsetCount 
       Height          =   315
       Left            =   1800
       TabIndex        =   26
@@ -70,67 +99,55 @@ Begin VB.PropertyPage PPListViewGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.ComboBoxW ComboHotMousePointer 
+   Begin VB.ComboBox ComboHotMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   6
       Top             =   840
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckUseColumnChevron 
+   Begin VB.CheckBox CheckUseColumnChevron 
+      Caption         =   "UseColumnChevron"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   57
+      Top             =   6240
+      Width           =   2160
+   End
+   Begin VB.CheckBox CheckGroupView 
+      Caption         =   "GroupView"
       Height          =   225
       Left            =   4200
       TabIndex        =   56
       Top             =   6000
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":008A
    End
-   Begin VBCCR16.CheckBoxW CheckGroupView 
-      Height          =   225
-      Left            =   4200
-      TabIndex        =   55
-      Top             =   5760
-      Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":00CA
-   End
-   Begin VBCCR16.CheckBoxW CheckUnderlineHot 
+   Begin VB.CheckBox CheckUnderlineHot 
+      Caption         =   "UnderlineHot"
       Height          =   225
       Left            =   4200
       TabIndex        =   45
       Top             =   3360
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":00FC
    End
-   Begin VBCCR16.CheckBoxW CheckHighlightHot 
+   Begin VB.CheckBox CheckHighlightHot 
+      Caption         =   "HighlightHot"
       Height          =   225
       Left            =   4200
       TabIndex        =   44
       Top             =   3120
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0134
    End
-   Begin VBCCR16.CheckBoxW CheckSnapToGrid 
+   Begin VB.CheckBox CheckSnapToGrid 
+      Caption         =   "SnapToGrid"
       Height          =   225
       Left            =   4200
-      TabIndex        =   54
-      Top             =   5520
+      TabIndex        =   55
+      Top             =   5760
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":016C
    End
-   Begin VBCCR16.TextBoxW TextTileViewLines 
+   Begin VBCCR17.TextBoxW TextTileViewLines 
       Height          =   315
       Left            =   1800
       TabIndex        =   24
@@ -139,97 +156,79 @@ Begin VB.PropertyPage PPListViewGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckPictureWatermark 
+   Begin VB.CheckBox CheckPictureWatermark 
+      Caption         =   "PictureWatermark"
       Height          =   225
       Left            =   4200
-      TabIndex        =   53
-      Top             =   5280
+      TabIndex        =   54
+      Top             =   5520
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":01A0
    End
-   Begin VBCCR16.CheckBoxW CheckAllowColumnCheckboxes 
+   Begin VB.CheckBox CheckAllowColumnCheckboxes 
+      Caption         =   "AllowColumnCheckboxes"
       Height          =   225
       Left            =   4200
       TabIndex        =   41
       Top             =   2400
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":01E0
    End
-   Begin VBCCR16.ComboBoxW ComboPictureAlignment 
+   Begin VB.ComboBox ComboPictureAlignment 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   22
       Top             =   3720
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckResizableColumnHeaders 
+   Begin VB.CheckBox CheckResizableColumnHeaders 
+      Caption         =   "ResizableColumnHeaders"
+      Height          =   225
+      Left            =   4200
+      TabIndex        =   53
+      Top             =   5280
+      Width           =   2160
+   End
+   Begin VB.CheckBox CheckTrackSizeColumnHeaders 
+      Caption         =   "TrackSizeColumnHeaders"
       Height          =   225
       Left            =   4200
       TabIndex        =   52
       Top             =   5040
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":022A
    End
-   Begin VBCCR16.CheckBoxW CheckTrackSizeColumnHeaders 
+   Begin VB.CheckBox CheckHighlightColumnHeaders 
+      Caption         =   "HighlightColumnHeaders"
       Height          =   225
       Left            =   4200
       TabIndex        =   51
       Top             =   4800
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0276
    End
-   Begin VBCCR16.CheckBoxW CheckHighlightColumnHeaders 
+   Begin VB.CheckBox CheckClickableColumnHeaders 
+      Caption         =   "ClickableColumnHeaders"
       Height          =   225
       Left            =   4200
       TabIndex        =   50
       Top             =   4560
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":02C2
    End
-   Begin VBCCR16.CheckBoxW CheckClickableColumnHeaders 
-      Height          =   225
-      Left            =   4200
-      TabIndex        =   49
-      Top             =   4320
-      Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":030E
-   End
-   Begin VBCCR16.ComboBoxW ComboTextBackground 
+   Begin VB.ComboBox ComboTextBackground 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   20
       Top             =   3360
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckDoubleBuffer 
+   Begin VB.CheckBox CheckDoubleBuffer 
+      Caption         =   "DoubleBuffer"
       Height          =   285
       Left            =   3480
       TabIndex        =   2
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPListViewGeneral.pgx":035A
    End
-   Begin VBCCR16.TextBoxW TextHoverSelectionTime 
+   Begin VBCCR17.TextBoxW TextHoverSelectionTime 
       Height          =   315
       Left            =   1800
       TabIndex        =   18
@@ -238,224 +237,149 @@ Begin VB.PropertyPage PPListViewGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckShowLabelTips 
+   Begin VB.CheckBox CheckShowLabelTips 
+      Caption         =   "ShowLabelTips"
       Height          =   225
       Left            =   4200
       TabIndex        =   48
       Top             =   4080
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0392
    End
-   Begin VBCCR16.CheckBoxW CheckShowInfoTips 
+   Begin VB.CheckBox CheckShowInfoTips 
+      Caption         =   "ShowInfoTips"
       Height          =   225
       Left            =   4200
       TabIndex        =   47
       Top             =   3840
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":03CC
    End
-   Begin VBCCR16.CheckBoxW CheckHoverSelection 
+   Begin VB.CheckBox CheckHoverSelection 
+      Caption         =   "HoverSelection"
       Height          =   225
       Left            =   4200
       TabIndex        =   46
       Top             =   3600
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0404
    End
-   Begin VBCCR16.CheckBoxW CheckHotTracking 
+   Begin VB.CheckBox CheckHotTracking 
+      Caption         =   "HotTracking"
       Height          =   225
       Left            =   4200
       TabIndex        =   43
       Top             =   2880
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0440
    End
-   Begin VBCCR16.CheckBoxW CheckGridLines 
+   Begin VB.CheckBox CheckGridLines 
+      Caption         =   "GridLines"
       Height          =   225
       Left            =   4200
       TabIndex        =   35
       Top             =   960
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0476
    End
-   Begin VBCCR16.CheckBoxW CheckFullRowSelect 
+   Begin VB.CheckBox CheckFullRowSelect 
+      Caption         =   "FullRowSelect"
       Height          =   225
       Left            =   4200
       TabIndex        =   34
       Top             =   720
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":04A8
    End
-   Begin VBCCR16.CheckBoxW CheckCheckboxes 
+   Begin VB.CheckBox CheckCheckboxes 
+      Caption         =   "Checkboxes"
       Height          =   225
       Left            =   4200
       TabIndex        =   42
       Top             =   2640
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":04E2
    End
-   Begin VBCCR16.CheckBoxW CheckAllowColumnReorder 
+   Begin VB.CheckBox CheckAllowColumnReorder 
+      Caption         =   "AllowColumnReorder"
       Height          =   225
       Left            =   4200
       TabIndex        =   40
       Top             =   2160
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0516
    End
-   Begin VBCCR16.CheckBoxW CheckMultiSelect 
+   Begin VB.CheckBox CheckMultiSelect 
+      Caption         =   "MultiSelect"
       Height          =   225
       Left            =   4200
       TabIndex        =   39
       Top             =   1920
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":055A
    End
-   Begin VBCCR16.CheckBoxW CheckLabelWrap 
+   Begin VB.CheckBox CheckLabelWrap 
+      Caption         =   "LabelWrap"
       Height          =   225
       Left            =   4200
       TabIndex        =   38
       Top             =   1680
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":0590
    End
-   Begin VBCCR16.ComboBoxW ComboLabelEdit 
+   Begin VB.ComboBox ComboLabelEdit 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   16
       Top             =   2640
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboArrange 
+   Begin VB.ComboBox ComboArrange 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   14
       Top             =   2280
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckHideSelection 
+   Begin VB.CheckBox CheckHideSelection 
+      Caption         =   "HideSelection"
       Height          =   225
       Left            =   4200
       TabIndex        =   37
       Top             =   1440
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":05C2
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   4
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboView 
+   Begin VB.ComboBox ComboView 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   12
       Top             =   1920
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckHideColumnHeaders 
+   Begin VB.CheckBox CheckHideColumnHeaders 
+      Caption         =   "HideColumnHeaders"
       Height          =   225
       Left            =   4200
       TabIndex        =   36
       Top             =   1200
       Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":05FC
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPListViewGeneral.pgx":063E
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPListViewGeneral.pgx":066C
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   225
-      Left            =   4200
-      TabIndex        =   33
-      Top             =   480
-      Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":06A4
-   End
-   Begin VBCCR16.ComboBoxW ComboHeaderMousePointer 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   8
-      Top             =   1200
-      Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
-   End
-   Begin VBCCR16.CheckBoxW CheckVirtualMode 
-      Height          =   225
-      Left            =   4200
-      TabIndex        =   59
-      Top             =   6720
-      Width           =   2160
-      _ExtentX        =   3810
-      _ExtentY        =   397
-      Caption         =   "PPListViewGeneral.pgx":06D8
-   End
-   Begin VBCCR16.TextBoxW TextVirtualItemCount 
-      Height          =   315
-      Left            =   1800
-      TabIndex        =   30
-      Top             =   5160
-      Width           =   2235
-      _ExtentX        =   0
-      _ExtentY        =   0
    End
    Begin VB.Label LabelVirtualDisabledInfos 
       Caption         =   "VirtualDisabledInfos:"
@@ -714,7 +638,7 @@ With PropertyPage.SelectedControls(0)
 .VirtualItemCount = CLng(TextVirtualItemCount.Text)
 Dim i As Long, Flags As LvwVirtualPropertyConstants
 For i = 0 To ListVirtualDisabledInfos.ListCount - 1
-    If ListVirtualDisabledInfos.ItemChecked(i) = True Then Flags = Flags Or ListVirtualDisabledInfos.ItemData(i)
+    If ListVirtualDisabledInfos.Selected(i) = True Then Flags = Flags Or ListVirtualDisabledInfos.ItemData(i)
 Next i
 .VirtualDisabledInfos = Flags
 .MouseTrack = CBool(CheckMouseTrack.Value = vbChecked)
@@ -733,6 +657,7 @@ Next i
 .HoverSelection = CBool(CheckHoverSelection.Value = vbChecked)
 .ShowInfoTips = CBool(CheckShowInfoTips.Value = vbChecked)
 .ShowLabelTips = CBool(CheckShowLabelTips.Value = vbChecked)
+.ShowColumnTips = CBool(CheckShowColumnTips.Value = vbChecked)
 .ClickableColumnHeaders = CBool(CheckClickableColumnHeaders.Value = vbChecked)
 .HighlightColumnHeaders = CBool(CheckHighlightColumnHeaders.Value = vbChecked)
 .TrackSizeColumnHeaders = CBool(CheckTrackSizeColumnHeaders.Value = vbChecked)
@@ -819,7 +744,7 @@ For i = 0 To ComboIMEMode.ListCount - 1
 Next i
 TextVirtualItemCount.Text = CStr(.VirtualItemCount)
 For i = 0 To ListVirtualDisabledInfos.ListCount - 1
-    If (ListVirtualDisabledInfos.ItemData(i) And .VirtualDisabledInfos) <> 0 Then ListVirtualDisabledInfos.ItemChecked(i) = True
+    If (ListVirtualDisabledInfos.ItemData(i) And .VirtualDisabledInfos) <> 0 Then ListVirtualDisabledInfos.Selected(i) = True
 Next i
 ListVirtualDisabledInfos.ListIndex = 0
 CheckMouseTrack.Value = IIf(.MouseTrack = True, vbChecked, vbUnchecked)
@@ -838,6 +763,7 @@ CheckUnderlineHot.Value = IIf(.UnderlineHot = True, vbChecked, vbUnchecked)
 CheckHoverSelection.Value = IIf(.HoverSelection = True, vbChecked, vbUnchecked)
 CheckShowInfoTips.Value = IIf(.ShowInfoTips = True, vbChecked, vbUnchecked)
 CheckShowLabelTips.Value = IIf(.ShowLabelTips = True, vbChecked, vbUnchecked)
+CheckShowColumnTips.Value = IIf(.ShowColumnTips = True, vbChecked, vbUnchecked)
 CheckClickableColumnHeaders.Value = IIf(.ClickableColumnHeaders = True, vbChecked, vbUnchecked)
 CheckHighlightColumnHeaders.Value = IIf(.HighlightColumnHeaders = True, vbChecked, vbUnchecked)
 CheckTrackSizeColumnHeaders.Value = IIf(.TrackSizeColumnHeaders = True, vbChecked, vbUnchecked)
@@ -1183,6 +1109,11 @@ PropertyPage.Changed = True
 End Sub
 
 Private Sub CheckShowLabelTips_Click()
+If FreezeChanged = True Then Exit Sub
+PropertyPage.Changed = True
+End Sub
+
+Private Sub CheckShowColumnTips_Click()
 If FreezeChanged = True Then Exit Sub
 PropertyPage.Changed = True
 End Sub

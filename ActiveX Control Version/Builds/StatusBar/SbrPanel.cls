@@ -39,6 +39,10 @@ Attribute Key.VB_Description = "Returns the key used in the collection."
 Key = PropKey
 End Property
 
+Public Property Let Key(ByVal Value As String)
+ShadowStatusBar.Panels.FChangeKey PropIndex, PropKey, Value
+End Property
+
 Public Property Get Tag() As Variant
 Attribute Tag.VB_Description = "Stores any extra data needed for your program."
 If IsEmpty(PropTag) Then
@@ -193,10 +197,10 @@ Err.Raise Number:=383, Description:="Property is read-only"
 End Property
 
 Public Property Get Width() As Single
-Attribute Width.VB_Description = "Returns the width of the panel."
+Attribute Width.VB_Description = "Returns/sets the width of the panel."
 Width = ShadowStatusBar.FPanelWidth(PropIndex)
 End Property
 
 Public Property Let Width(ByVal Value As Single)
-Err.Raise Number:=383, Description:="Property is read-only"
+ShadowStatusBar.FPanelWidth(PropIndex) = Value
 End Property

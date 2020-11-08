@@ -10,43 +10,36 @@ Begin VB.PropertyPage PPStatusBarPanels
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   4140
    ScaleWidth      =   5925
-   Begin VBCCR16.ComboBoxW ComboDTFormat 
+   Begin VB.ComboBox ComboDTFormat 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   23
       Top             =   3360
       Width           =   1575
-      _ExtentX        =   2778
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.CommandButtonW CommandForeColor 
+   Begin VB.CommandButton CommandForeColor 
+      BackColor       =   &H80000012&
+      Enabled         =   0   'False
       Height          =   225
       Left            =   1200
+      Style           =   1  'Graphical
       TabIndex        =   25
       Top             =   3720
       Width           =   495
-      _ExtentX        =   0
-      _ExtentY        =   0
-      VisualStyles    =   0   'False
-      BackColor       =   -2147483630
-      Enabled         =   0   'False
-      Style           =   1
    End
-   Begin VBCCR16.CheckBoxW CheckBold 
+   Begin VB.CheckBox CheckBold 
+      Caption         =   "&Bold"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   3000
       TabIndex        =   38
       Top             =   3360
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPStatusBarPanels.pgx":0000
    End
-   Begin VBCCR16.TextBoxW TextToolTipText 
+   Begin VBCCR17.TextBoxW TextToolTipText 
       Height          =   315
       Left            =   1200
       TabIndex        =   9
@@ -88,16 +81,14 @@ Begin VB.PropertyPage PPStatusBarPanels
          TabStop         =   0   'False
          Top             =   630
          Width           =   1035
-         Begin VBCCR16.CommandButtonW CommandPictureNo 
+         Begin VB.CommandButton CommandPictureNo 
+            Caption         =   "No &Picture"
+            Enabled         =   0   'False
             Height          =   315
             Left            =   0
             TabIndex        =   35
             Top             =   0
             Width           =   1035
-            _ExtentX        =   0
-            _ExtentY        =   0
-            Enabled         =   0   'False
-            Caption         =   "PPStatusBarPanels.pgx":002A
          End
       End
       Begin VB.PictureBox PictureCommandPictureBrowse 
@@ -111,16 +102,14 @@ Begin VB.PropertyPage PPStatusBarPanels
          TabStop         =   0   'False
          Top             =   240
          Width           =   1035
-         Begin VBCCR16.CommandButtonW CommandPictureBrowse 
+         Begin VB.CommandButton CommandPictureBrowse 
+            Caption         =   "Br&owse..."
+            Enabled         =   0   'False
             Height          =   315
             Left            =   0
             TabIndex        =   33
             Top             =   0
             Width           =   1035
-            _ExtentX        =   0
-            _ExtentY        =   0
-            Enabled         =   0   'False
-            Caption         =   "PPStatusBarPanels.pgx":0060
          End
       End
       Begin VB.Image ImagePicture 
@@ -134,29 +123,25 @@ Begin VB.PropertyPage PPStatusBarPanels
          Width           =   960
       End
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "&Enabled"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   3000
       TabIndex        =   36
       Top             =   3030
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPStatusBarPanels.pgx":0094
    End
-   Begin VBCCR16.CheckBoxW CheckVisible 
+   Begin VB.CheckBox CheckVisible 
+      Caption         =   "&Visible"
+      Enabled         =   0   'False
       Height          =   285
       Left            =   4440
       TabIndex        =   37
       Top             =   3030
       Width           =   1215
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Enabled         =   0   'False
-      Caption         =   "PPStatusBarPanels.pgx":00C4
    End
-   Begin VBCCR16.TextBoxW TextActualWidth 
+   Begin VBCCR17.TextBoxW TextActualWidth 
       Height          =   315
       Left            =   4080
       TabIndex        =   29
@@ -167,7 +152,7 @@ Begin VB.PropertyPage PPStatusBarPanels
       BackColor       =   -2147483633
       Locked          =   -1  'True
    End
-   Begin VBCCR16.TextBoxW TextMinWidth 
+   Begin VBCCR17.TextBoxW TextMinWidth 
       Height          =   315
       Left            =   4080
       TabIndex        =   27
@@ -178,55 +163,47 @@ Begin VB.PropertyPage PPStatusBarPanels
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.ComboBoxW ComboAutoSize 
+   Begin VB.ComboBox ComboAutoSize 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   19
       Top             =   2640
       Width           =   1575
-      _ExtentX        =   2778
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboBevel 
+   Begin VB.ComboBox ComboBevel 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   17
       Top             =   2280
       Width           =   1575
-      _ExtentX        =   2778
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboStyle 
+   Begin VB.ComboBox ComboStyle 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   15
       Top             =   1920
       Width           =   1575
-      _ExtentX        =   2778
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboAlignment 
+   Begin VB.ComboBox ComboAlignment 
+      BackColor       =   &H8000000F&
+      Enabled         =   0   'False
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   21
       Top             =   3000
       Width           =   1575
-      _ExtentX        =   2778
-      _ExtentY        =   556
-      BackColor       =   -2147483633
-      Enabled         =   0   'False
-      Style           =   2
    End
-   Begin VBCCR16.TextBoxW TextTag 
+   Begin VBCCR17.TextBoxW TextTag 
       Height          =   315
       Left            =   1200
       TabIndex        =   13
@@ -237,7 +214,7 @@ Begin VB.PropertyPage PPStatusBarPanels
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextText 
+   Begin VBCCR17.TextBoxW TextText 
       Height          =   315
       Left            =   1200
       TabIndex        =   7
@@ -248,7 +225,7 @@ Begin VB.PropertyPage PPStatusBarPanels
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextKey 
+   Begin VBCCR17.TextBoxW TextKey 
       Height          =   315
       Left            =   1200
       TabIndex        =   11
@@ -259,16 +236,29 @@ Begin VB.PropertyPage PPStatusBarPanels
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.CommandButtonW CommandBack 
+   Begin VB.CommandButton CommandBack 
+      Caption         =   "3"
+      Enabled         =   0   'False
+      BeginProperty Font 
+         Name            =   "Marlett"
+         Size            =   9
+         Charset         =   2
+         Weight          =   500
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   315
       Left            =   2160
       TabIndex        =   2
       ToolTipText     =   "Select Previous Panel"
       Top             =   120
       Width           =   300
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+   End
+   Begin VB.CommandButton CommandNext 
+      Caption         =   "4"
+      Enabled         =   0   'False
+      BeginProperty Font 
          Name            =   "Marlett"
          Size            =   9
          Charset         =   2
@@ -277,31 +267,14 @@ Begin VB.PropertyPage PPStatusBarPanels
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Enabled         =   0   'False
-      Caption         =   "PPStatusBarPanels.pgx":00F4
-   End
-   Begin VBCCR16.CommandButtonW CommandNext 
       Height          =   315
       Left            =   2460
       TabIndex        =   3
       ToolTipText     =   "Select Next Panel"
       Top             =   120
       Width           =   300
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Marlett"
-         Size            =   9
-         Charset         =   2
-         Weight          =   500
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Enabled         =   0   'False
-      Caption         =   "PPStatusBarPanels.pgx":0116
    End
-   Begin VBCCR16.TextBoxW TextIndex 
+   Begin VBCCR17.TextBoxW TextIndex 
       Height          =   315
       Left            =   1200
       TabIndex        =   1
@@ -310,30 +283,26 @@ Begin VB.PropertyPage PPStatusBarPanels
       _ExtentX        =   0
       _ExtentY        =   0
       BackColor       =   -2147483633
-      Text            =   "PPStatusBarPanels.pgx":0138
+      Text            =   "PPStatusBarPanels.pgx":0000
       Locked          =   -1  'True
    End
-   Begin VBCCR16.CommandButtonW CommandRemove 
+   Begin VB.CommandButton CommandRemove 
+      Caption         =   "&Remove..."
       Height          =   315
       Left            =   4620
       TabIndex        =   5
       ToolTipText     =   "Remove Selected Panel"
       Top             =   120
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarPanels.pgx":0164
    End
-   Begin VBCCR16.CommandButtonW CommandInsert 
+   Begin VB.CommandButton CommandInsert 
+      Caption         =   "I&nsert..."
       Height          =   315
       Left            =   3480
       TabIndex        =   4
       ToolTipText     =   "Insert Panel"
       Top             =   120
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPStatusBarPanels.pgx":0198
    End
    Begin VB.Label LabelDTFormat 
       Caption         =   "&DTFormat:"
@@ -542,7 +511,6 @@ On Error GoTo 0
 If CurrIndex > 0 Then
     With PropShadowPanels(CurrIndex)
     .Text = TextText.Text
-    .Key = TextKey.Text
     .Tag = TextTag.Text
     .ToolTipText = TextToolTipText.Text
     .Style = ComboStyle.ItemData(ComboStyle.ListIndex)
@@ -559,7 +527,21 @@ If CurrIndex > 0 Then
     End With
     With PropertyPage.SelectedControls(0)
     .Panels.Remove CurrIndex
-    With .Panels.Add(CurrIndex, PropShadowPanels(CurrIndex).Key, PropShadowPanels(CurrIndex).Text, PropShadowPanels(CurrIndex).Style)
+    .Panels.Add CurrIndex, , PropShadowPanels(CurrIndex).Text, PropShadowPanels(CurrIndex).Style
+    If Not TextKey.Text = vbNullString Then
+        If .Panels.Exists(TextKey.Text) = True Then
+            MsgBox "This key is already associated with an element of this collection.", vbCritical + vbOKOnly
+            FreezeChanged = True
+            TextKey.Text = PropShadowPanels(CurrIndex).Key
+            FreezeChanged = False
+        Else
+            PropShadowPanels(CurrIndex).Key = TextKey.Text
+        End If
+    Else
+        PropShadowPanels(CurrIndex).Key = vbNullString
+    End If
+    With .Panels(CurrIndex)
+    If Not PropShadowPanels(CurrIndex).Key = vbNullString Then .Key = PropShadowPanels(CurrIndex).Key
     .Tag = PropShadowPanels(CurrIndex).Tag
     .ToolTipText = PropShadowPanels(CurrIndex).ToolTipText
     .Bevel = PropShadowPanels(CurrIndex).Bevel

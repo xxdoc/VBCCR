@@ -220,16 +220,17 @@ Private Declare Function CloseThemeData Lib "uxtheme" (ByVal Theme As Long) As L
 Private Const ICC_STANDARD_CLASSES As Long = &H4000
 Private Const RDW_UPDATENOW As Long = &H100, RDW_INVALIDATE As Long = &H1, RDW_ERASE As Long = &H4, RDW_ALLCHILDREN As Long = &H80
 Private Const HWND_DESKTOP As Long = &H0
-Private Const FALT As Long = &H10
 Private Const FVIRTKEY As Long = &H1
+Private Const FSHIFT As Long = &H4
+Private Const FALT As Long = &H10
 Private Const GWL_STYLE As Long = (-16)
 Private Const WS_VISIBLE As Long = &H10000000
 Private Const WS_CHILD As Long = &H40000000
 Private Const WS_EX_RTLREADING As Long = &H2000
 Private Const SW_HIDE As Long = &H0
 Private Const WM_NOTIFY As Long = &H4E
-Private Const WM_MOUSEACTIVATE As Long = &H21, MA_ACTIVATE As Long = &H1, MA_ACTIVATEANDEAT As Long = &H2, MA_NOACTIVATE As Long = &H3, MA_NOACTIVATEANDEAT As Long = &H4
 Private Const WM_SETFOCUS As Long = &H7
+Private Const WM_KILLFOCUS As Long = &H8
 Private Const WM_KEYDOWN As Long = &H100
 Private Const WM_KEYUP As Long = &H101
 Private Const WM_CHAR As Long = &H102
@@ -251,7 +252,6 @@ Private Const WM_DRAWITEM As Long = &H2B, ODT_BUTTON As Long = &H4, ODS_SELECTED
 Private Const WM_DESTROY As Long = &H2
 Private Const WM_NCDESTROY As Long = &H82
 Private Const WM_THEMECHANGED As Long = &H31A
-Private Const WM_STYLECHANGED As Long = &H7D
 Private Const WM_SETFONT As Long = &H30
 Private Const WM_SETCURSOR As Long = &H20, HTCLIENT As Long = 1
 Private Const WM_CTLCOLORSTATIC As Long = &H138
@@ -322,10 +322,11 @@ Private CheckBoxAcceleratorHandle As Long
 Private CheckBoxFontHandle As Long
 Private CheckBoxCharCodeCache As Long
 Private CheckBoxMouseOver(0 To 1) As Boolean
-Private CheckBoxDesignMode As Boolean, CheckBoxTopDesignMode As Boolean
+Private CheckBoxDesignMode As Boolean
 Private CheckBoxImageListHandle As Long
 Private CheckBoxImageListObjectPointer As Long
 Private CheckBoxEnabledVisualStyles As Boolean
+Private UCNoSetFocusFwd As Boolean
 Private DispIDMousePointer As Long
 Private DispIDImageList As Long, ImageListArray() As String
 Private DispIDValue As Long
@@ -364,7 +365,7 @@ End Sub
 Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByRef riid As OLEGuids.OLECLSID, ByVal dwOptionsSetMask As Long, ByVal dwEnabledOptions As Long)
 End Sub
 
-Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
+Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
 If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     Dim KeyCode As Integer, IsInputKey As Boolean
     KeyCode = wParam And &HFF&
@@ -376,17 +377,14 @@ If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     Select Case KeyCode
         Case vbKeyUp, vbKeyDown, vbKeyLeft, vbKeyRight, vbKeyPageDown, vbKeyPageUp, vbKeyHome, vbKeyEnd, vbKeyTab, vbKeyReturn, vbKeyEscape
             If IsInputKey = True Then
-                If CheckBoxHandle <> 0 Then
-                    SendMessage CheckBoxHandle, wMsg, wParam, ByVal lParam
-                    Handled = True
-                End If
+                SendMessage hWnd, wMsg, wParam, ByVal lParam
+                Handled = True
             End If
     End Select
 End If
 End Sub
 
 Private Sub IOleControlVB_GetControlInfo(ByRef Handled As Boolean, ByRef AccelCount As Integer, ByRef AccelTable As Long, ByRef Flags As Long)
-Static CmdID As Integer
 If CheckBoxAcceleratorHandle <> 0 Then
     DestroyAcceleratorTable CheckBoxAcceleratorHandle
     CheckBoxAcceleratorHandle = 0
@@ -395,13 +393,18 @@ If CheckBoxHandle <> 0 Then
     Dim Accel As Integer, AccelArray() As TACCEL, AccelRefCount As Long
     Accel = AccelCharCode(Me.Caption)
     If Accel <> 0 Then
-        ReDim Preserve AccelArray(0 To AccelRefCount)
+        ReDim Preserve AccelArray(0 To AccelRefCount) As TACCEL
         With AccelArray(AccelRefCount)
-        .FVirt = FALT Or FVIRTKEY
-        If CmdID = 0 Then CmdID = 1000 Else CmdID = CmdID + 100
-        If CmdID >= &H7FFFFFD0 Then CmdID = 0
-        .Cmd = CmdID
+        .FVirt = FVIRTKEY Or FALT
+        .Cmd = 1
         .Key = (VkKeyScan(Accel) And &HFF&)
+        End With
+        AccelRefCount = AccelRefCount + 1
+        ReDim Preserve AccelArray(0 To AccelRefCount) As TACCEL
+        With AccelArray(AccelRefCount)
+        .FVirt = FVIRTKEY Or FALT Or FSHIFT
+        .Cmd = AccelArray(AccelRefCount - 1).Cmd
+        .Key = AccelArray(AccelRefCount - 1).Key
         End With
         AccelRefCount = AccelRefCount + 1
     End If
@@ -415,7 +418,7 @@ If CheckBoxHandle <> 0 Then
 End If
 End Sub
 
-Private Sub IOleControlVB_OnMnemonic(ByRef Handled As Boolean, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
+Private Sub IOleControlVB_OnMnemonic(ByRef Handled As Boolean, ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
 If CheckBoxHandle <> 0 And wMsg = WM_SYSKEYDOWN Then
     Dim Accel As Long
     Accel = AccelCharCode(Me.Caption)
@@ -485,9 +488,9 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_STANDARD_CLASSES)
-Call SetVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call SetVTableSubclass(Me, VTableInterfaceControl)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call SetVTableHandling(Me, VTableInterfaceControl)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 ReDim ImageListArray(0) As String
 End Sub
 
@@ -497,7 +500,6 @@ If DispIDImageList = 0 Then DispIDImageList = GetDispID(Me, "ImageList")
 If DispIDValue = 0 Then DispIDValue = GetDispID(Me, "Value")
 On Error Resume Next
 CheckBoxDesignMode = Not Ambient.UserMode
-CheckBoxTopDesignMode = Not GetTopUserControl(Me).Ambient.UserMode
 On Error GoTo 0
 Set PropFont = Ambient.Font
 PropVisualStyles = True
@@ -533,7 +535,6 @@ If DispIDImageList = 0 Then DispIDImageList = GetDispID(Me, "ImageList")
 If DispIDValue = 0 Then DispIDValue = GetDispID(Me, "Value")
 On Error Resume Next
 CheckBoxDesignMode = Not Ambient.UserMode
-CheckBoxTopDesignMode = Not GetTopUserControl(Me).Ambient.UserMode
 On Error GoTo 0
 With PropBag
 Set PropFont = .ReadProperty("Font", Nothing)
@@ -553,7 +554,7 @@ PropImageListName = .ReadProperty("ImageList", "(None)")
 PropImageListAlignment = .ReadProperty("ImageListAlignment", ChkImageListAlignmentLeft)
 PropImageListMargin = .ReadProperty("ImageListMargin", 0)
 PropValue = .ReadProperty("Value", vbUnchecked)
-PropCaption = VarToStr(.ReadProperty("Caption", vbNullString))
+PropCaption = .ReadProperty("Caption", vbNullString) ' Unicode not necessary
 PropAlignment = .ReadProperty("Alignment", CCLeftRightAlignmentLeft)
 PropTextAlignment = .ReadProperty("TextAlignment", vbLeftJustify)
 PropPushLike = .ReadProperty("PushLike", False)
@@ -590,7 +591,7 @@ With PropBag
 .WriteProperty "ImageListAlignment", PropImageListAlignment, ChkImageListAlignmentLeft
 .WriteProperty "ImageListMargin", PropImageListMargin, 0
 .WriteProperty "Value", PropValue, vbUnchecked
-.WriteProperty "Caption", StrToVar(PropCaption), vbNullString
+.WriteProperty "Caption", PropCaption, vbNullString ' Unicode not necessary
 .WriteProperty "Alignment", PropAlignment, CCLeftRightAlignmentLeft
 .WriteProperty "TextAlignment", PropTextAlignment, vbLeftJustify
 .WriteProperty "PushLike", PropPushLike, False
@@ -659,9 +660,9 @@ InProc = False
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call RemoveVTableSubclass(Me, VTableInterfaceControl)
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call RemoveVTableHandling(Me, VTableInterfaceControl)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroyCheckBox
 Call ComCtlsReleaseShellMod
 End Sub
@@ -968,6 +969,7 @@ Select Case Value
     Case Else
         Err.Raise 380
 End Select
+If CheckBoxDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MousePointer"
 End Property
 
@@ -995,6 +997,7 @@ Else
         End If
     End If
 End If
+If CheckBoxDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MouseIcon"
 End Property
 
@@ -1760,6 +1763,9 @@ Private Function WindowProcControl(ByVal hWnd As Long, ByVal wMsg As Long, ByVal
 Select Case wMsg
     Case WM_SETFOCUS
         If wParam <> UserControl.hWnd Then SetFocusAPI UserControl.hWnd: Exit Function
+        Call ActivateIPAO(Me)
+    Case WM_KILLFOCUS
+        Call DeActivateIPAO
     Case WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
         Dim KeyCode As Integer
         KeyCode = wParam And &HFF&
@@ -1787,38 +1793,25 @@ Select Case wMsg
         RaiseEvent KeyPress(KeyChar)
         wParam = CIntToUInt(KeyChar)
     Case WM_UNICHAR
-        If wParam = UNICODE_NOCHAR Then WindowProcControl = 1 Else SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
+        If wParam = UNICODE_NOCHAR Then
+            WindowProcControl = 1
+        Else
+            Dim UTF16 As String
+            UTF16 = UTF32CodePoint_To_UTF16(wParam)
+            If Len(UTF16) = 1 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(UTF16)), ByVal lParam
+            ElseIf Len(UTF16) = 2 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Left$(UTF16, 1))), ByVal lParam
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Right$(UTF16, 1))), ByVal lParam
+            End If
+            WindowProcControl = 0
+        End If
         Exit Function
     Case WM_IME_CHAR
         SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
         Exit Function
-    Case WM_MOUSEACTIVATE
-        Static InProc As Boolean
-        If CheckBoxTopDesignMode = False And GetFocus() <> CheckBoxHandle Then
-            If InProc = True Then WindowProcControl = MA_ACTIVATEANDEAT: Exit Function
-            Select Case HiWord(lParam)
-                Case WM_LBUTTONDOWN
-                    On Error Resume Next
-                    With UserControl
-                    If .Extender.CausesValidation = True Then
-                        InProc = True
-                        Call ComCtlsTopParentValidateControls(Me)
-                        InProc = False
-                        If Err.Number = 380 Then
-                            WindowProcControl = MA_ACTIVATEANDEAT
-                        Else
-                            SetFocusAPI .hWnd
-                            WindowProcControl = MA_NOACTIVATE
-                        End If
-                    Else
-                        SetFocusAPI .hWnd
-                        WindowProcControl = MA_NOACTIVATE
-                    End If
-                    End With
-                    On Error GoTo 0
-                    Exit Function
-            End Select
-        End If
+    Case WM_LBUTTONDOWN
+        If GetFocus() <> hWnd Then UCNoSetFocusFwd = True: SetFocusAPI UserControl.hWnd: UCNoSetFocusFwd = False
     Case WM_SETCURSOR
         If LoWord(lParam) = HTCLIENT Then
             If MousePointerID(PropMousePointer) <> 0 Then
@@ -1979,7 +1972,7 @@ Select Case wMsg
         If DIS.CtlType = ODT_BUTTON And DIS.hWndItem = CheckBoxHandle Then
             If PropStyle = vbButtonGraphical Then
                 Dim Brush As Long, Text As String, TextRect As RECT
-                Brush = CreateSolidBrush(WinColor(UserControl.BackColor))
+                Brush = CreateSolidBrush(WinColor(Me.BackColor))
                 Text = Me.Caption
                 Dim ButtonPicture As IPictureDisp, DisabledPictureAvailable As Boolean
                 If (DIS.ItemState And ODS_DISABLED) = ODS_DISABLED Then
@@ -2252,7 +2245,7 @@ Select Case wMsg
         End If
 End Select
 WindowProcUserControl = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
-If wMsg = WM_SETFOCUS Then SetFocusAPI CheckBoxHandle
+If wMsg = WM_SETFOCUS And UCNoSetFocusFwd = False Then SetFocusAPI CheckBoxHandle
 End Function
 
 Private Function WindowProcUserControlDesignMode(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long

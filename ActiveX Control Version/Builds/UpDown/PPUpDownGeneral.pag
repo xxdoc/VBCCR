@@ -9,76 +9,70 @@ Begin VB.PropertyPage PPUpDownGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3810
    ScaleWidth      =   6075
-   Begin VBCCR16.ComboBoxW ComboBuddyProperty 
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   19
+      Top             =   840
+      Width           =   1800
+   End
+   Begin VB.ComboBox ComboBuddyProperty 
       Height          =   315
       Left            =   1800
       TabIndex        =   5
       Top             =   840
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
    End
-   Begin VBCCR16.ComboBoxW ComboNumberStyle 
+   Begin VB.ComboBox ComboNumberStyle 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   17
       Top             =   3000
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboBuddyControl 
+   Begin VB.ComboBox ComboBuddyControl 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   3
       Top             =   480
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckSyncBuddy 
+   Begin VB.CheckBox CheckSyncBuddy 
+      Caption         =   "SyncBuddy"
       Height          =   285
       Left            =   4200
       TabIndex        =   18
       Top             =   480
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboOrientation 
+   Begin VB.ComboBox ComboOrientation 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   15
       Top             =   2640
       Width           =   2235
-      _ExtentX        =   4233
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckThousandsSeparator 
+   Begin VB.CheckBox CheckThousandsSeparator 
+      Caption         =   "ThousandsSeparator"
       Height          =   285
       Left            =   4200
       TabIndex        =   22
       Top             =   1920
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":0032
    End
-   Begin VBCCR16.CheckBoxW CheckHotTracking 
+   Begin VB.CheckBox CheckHotTracking 
+      Caption         =   "HotTracking"
       Height          =   285
       Left            =   4200
       TabIndex        =   21
       Top             =   1560
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":0076
    End
-   Begin VBCCR16.TextBoxW TextValue 
+   Begin VBCCR17.TextBoxW TextValue 
       Height          =   315
       Left            =   1800
       TabIndex        =   11
@@ -87,7 +81,7 @@ Begin VB.PropertyPage PPUpDownGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextIncrement 
+   Begin VBCCR17.TextBoxW TextIncrement 
       Height          =   315
       Left            =   1800
       TabIndex        =   13
@@ -96,7 +90,7 @@ Begin VB.PropertyPage PPUpDownGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMax 
+   Begin VBCCR17.TextBoxW TextMax 
       Height          =   315
       Left            =   1800
       TabIndex        =   9
@@ -105,7 +99,7 @@ Begin VB.PropertyPage PPUpDownGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMin 
+   Begin VBCCR17.TextBoxW TextMin 
       Height          =   315
       Left            =   1800
       TabIndex        =   7
@@ -114,45 +108,29 @@ Begin VB.PropertyPage PPUpDownGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckWrap 
+   Begin VB.CheckBox CheckWrap 
+      Caption         =   "Wrap"
       Height          =   285
       Left            =   4200
       TabIndex        =   20
       Top             =   1200
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":00AC
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":00D4
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":0102
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   19
-      Top             =   840
-      Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPUpDownGeneral.pgx":013A
    End
    Begin VB.Label LabelNumberStyle 
       Caption         =   "NumberStyle:"

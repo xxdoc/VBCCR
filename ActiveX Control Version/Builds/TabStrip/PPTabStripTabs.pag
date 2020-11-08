@@ -2,15 +2,15 @@ VERSION 5.00
 Begin VB.PropertyPage PPTabStripTabs 
    AutoRedraw      =   -1  'True
    Caption         =   "Tabs"
-   ClientHeight    =   4350
+   ClientHeight    =   4875
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   5925
    LockControls    =   -1  'True
    PaletteMode     =   0  'Halftone
-   ScaleHeight     =   4350
+   ScaleHeight     =   4875
    ScaleWidth      =   5925
-   Begin VBCCR16.TextBoxW TextToolTipText 
+   Begin VBCCR17.TextBoxW TextToolTipText 
       Height          =   315
       Left            =   1200
       TabIndex        =   13
@@ -21,7 +21,7 @@ Begin VB.PropertyPage PPTabStripTabs
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextTag 
+   Begin VBCCR17.TextBoxW TextTag 
       Height          =   315
       Left            =   1200
       TabIndex        =   11
@@ -32,7 +32,7 @@ Begin VB.PropertyPage PPTabStripTabs
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextImage 
+   Begin VBCCR17.TextBoxW TextImage 
       Height          =   315
       Left            =   1200
       TabIndex        =   15
@@ -43,7 +43,7 @@ Begin VB.PropertyPage PPTabStripTabs
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextCaption 
+   Begin VBCCR17.TextBoxW TextCaption 
       Height          =   315
       Left            =   1200
       TabIndex        =   7
@@ -54,7 +54,7 @@ Begin VB.PropertyPage PPTabStripTabs
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.TextBoxW TextKey 
+   Begin VBCCR17.TextBoxW TextKey 
       Height          =   315
       Left            =   1200
       TabIndex        =   9
@@ -65,16 +65,29 @@ Begin VB.PropertyPage PPTabStripTabs
       BackColor       =   -2147483633
       Enabled         =   0   'False
    End
-   Begin VBCCR16.CommandButtonW CommandBack 
+   Begin VB.CommandButton CommandBack 
+      Caption         =   "3"
+      Enabled         =   0   'False
+      BeginProperty Font 
+         Name            =   "Marlett"
+         Size            =   9
+         Charset         =   2
+         Weight          =   500
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   315
       Left            =   2160
       TabIndex        =   2
       ToolTipText     =   "Select Previous Tab"
       Top             =   120
       Width           =   300
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+   End
+   Begin VB.CommandButton CommandNext 
+      Caption         =   "4"
+      Enabled         =   0   'False
+      BeginProperty Font 
          Name            =   "Marlett"
          Size            =   9
          Charset         =   2
@@ -83,31 +96,14 @@ Begin VB.PropertyPage PPTabStripTabs
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Enabled         =   0   'False
-      Caption         =   "PPTabStripTabs.pgx":0000
-   End
-   Begin VBCCR16.CommandButtonW CommandNext 
       Height          =   315
       Left            =   2460
       TabIndex        =   3
       ToolTipText     =   "Select Next Tab"
       Top             =   120
       Width           =   300
-      _ExtentX        =   0
-      _ExtentY        =   0
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Marlett"
-         Size            =   9
-         Charset         =   2
-         Weight          =   500
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Enabled         =   0   'False
-      Caption         =   "PPTabStripTabs.pgx":0022
    End
-   Begin VBCCR16.TextBoxW TextIndex 
+   Begin VBCCR17.TextBoxW TextIndex 
       Height          =   315
       Left            =   1200
       TabIndex        =   1
@@ -116,30 +112,26 @@ Begin VB.PropertyPage PPTabStripTabs
       _ExtentX        =   0
       _ExtentY        =   0
       BackColor       =   -2147483633
-      Text            =   "PPTabStripTabs.pgx":0044
+      Text            =   "PPTabStripTabs.pgx":0000
       Locked          =   -1  'True
    End
-   Begin VBCCR16.CommandButtonW CommandRemove 
+   Begin VB.CommandButton CommandRemove 
+      Caption         =   "&Remove..."
       Height          =   315
       Left            =   4620
       TabIndex        =   5
       ToolTipText     =   "Remove Selected Tab"
       Top             =   120
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPTabStripTabs.pgx":0070
    End
-   Begin VBCCR16.CommandButtonW CommandInsert 
+   Begin VB.CommandButton CommandInsert 
+      Caption         =   "I&nsert..."
       Height          =   315
       Left            =   3480
       TabIndex        =   4
       ToolTipText     =   "Insert Tab"
       Top             =   120
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPTabStripTabs.pgx":00A4
    End
    Begin VB.Label LabelToolTipText 
       Caption         =   "ToolTi&pText:"
@@ -221,7 +213,6 @@ On Error GoTo 0
 If CurrIndex > 0 Then
     With PropShadowTabs(CurrIndex)
     .Caption = TextCaption.Text
-    .Key = TextKey.Text
     .Tag = TextTag.Text
     .ToolTipText = TextToolTipText.Text
     If IsNumeric(TextImage.Text) Then
@@ -232,10 +223,24 @@ If CurrIndex > 0 Then
     End With
     With PropertyPage.SelectedControls(0)
     .Tabs.Remove CurrIndex
-    With .Tabs.Add(CurrIndex, PropShadowTabs(CurrIndex).Key, PropShadowTabs(CurrIndex).Caption, PropShadowTabs(CurrIndex).Image)
+    With .Tabs.Add(CurrIndex, , PropShadowTabs(CurrIndex).Caption, PropShadowTabs(CurrIndex).Image)
     .Tag = PropShadowTabs(CurrIndex).Tag
     .ToolTipText = PropShadowTabs(CurrIndex).ToolTipText
     End With
+    If Not TextKey.Text = vbNullString Then
+        If .Tabs.Exists(TextKey.Text) = True Then
+            .Tabs(CurrIndex).Key = PropShadowTabs(CurrIndex).Key
+            MsgBox "This key is already associated with an element of this collection.", vbCritical + vbOKOnly
+            FreezeChanged = True
+            TextKey.Text = PropShadowTabs(CurrIndex).Key
+            FreezeChanged = False
+        Else
+            PropShadowTabs(CurrIndex).Key = TextKey.Text
+            .Tabs(CurrIndex).Key = PropShadowTabs(CurrIndex).Key
+        End If
+    Else
+        PropShadowTabs(CurrIndex).Key = vbNullString
+    End If
     End With
 End If
 Call PropertyPage_SelectionChanged

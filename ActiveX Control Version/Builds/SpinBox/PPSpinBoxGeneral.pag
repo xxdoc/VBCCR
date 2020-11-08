@@ -9,107 +9,95 @@ Begin VB.PropertyPage PPSpinBoxGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   3810
    ScaleWidth      =   6075
-   Begin VBCCR16.CheckBoxW CheckHideSelection 
+   Begin VB.CheckBox CheckMouseTrack 
+      Caption         =   "MouseTrack"
+      Height          =   285
+      Left            =   4200
+      TabIndex        =   19
+      Top             =   480
+      Width           =   1800
+   End
+   Begin VB.CheckBox CheckHideSelection 
+      Caption         =   "HideSelection"
       Height          =   285
       Left            =   4200
       TabIndex        =   25
       Top             =   2640
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":0000
    End
-   Begin VBCCR16.ComboBoxW ComboNumberStyle 
+   Begin VB.ComboBox ComboNumberStyle 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   16
       Top             =   2640
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboTextAlignment 
+   Begin VB.ComboBox ComboTextAlignment 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   18
       Top             =   3000
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboAlignment 
+   Begin VB.ComboBox ComboAlignment 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   14
       Top             =   2280
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.ComboBoxW ComboMousePointer 
+   Begin VB.ComboBox ComboMousePointer 
       Height          =   315
       Left            =   1800
+      Style           =   2  'Dropdown List
       TabIndex        =   4
       Top             =   480
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
-   Begin VBCCR16.CheckBoxW CheckAllowOnlyNumbers 
+   Begin VB.CheckBox CheckAllowOnlyNumbers 
+      Caption         =   "AllowOnlyNumbers"
       Height          =   285
       Left            =   4200
       TabIndex        =   24
       Top             =   2280
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":003A
    End
-   Begin VBCCR16.CheckBoxW CheckArrowKeysChange 
+   Begin VB.CheckBox CheckArrowKeysChange 
+      Caption         =   "ArrowKeysChange"
       Height          =   285
       Left            =   4200
       TabIndex        =   23
       Top             =   1920
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":007A
    End
-   Begin VBCCR16.CheckBoxW CheckVisualStyles 
+   Begin VB.CheckBox CheckVisualStyles 
+      Caption         =   "VisualStyles"
       Height          =   285
       Left            =   3480
       TabIndex        =   2
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":00B8
    End
-   Begin VBCCR16.CheckBoxW CheckThousandsSeparator 
+   Begin VB.CheckBox CheckThousandsSeparator 
+      Caption         =   "ThousandsSeparator"
       Height          =   285
       Left            =   4200
       TabIndex        =   22
       Top             =   1560
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":00F0
    End
-   Begin VBCCR16.CheckBoxW CheckHotTracking 
+   Begin VB.CheckBox CheckHotTracking 
+      Caption         =   "HotTracking"
       Height          =   285
       Left            =   4200
       TabIndex        =   21
       Top             =   1200
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":0134
    End
-   Begin VBCCR16.TextBoxW TextValue 
+   Begin VBCCR17.TextBoxW TextValue 
       Height          =   315
       Left            =   1800
       TabIndex        =   10
@@ -118,7 +106,7 @@ Begin VB.PropertyPage PPSpinBoxGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextIncrement 
+   Begin VBCCR17.TextBoxW TextIncrement 
       Height          =   315
       Left            =   1800
       TabIndex        =   12
@@ -127,7 +115,7 @@ Begin VB.PropertyPage PPSpinBoxGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMax 
+   Begin VBCCR17.TextBoxW TextMax 
       Height          =   315
       Left            =   1800
       TabIndex        =   8
@@ -136,7 +124,7 @@ Begin VB.PropertyPage PPSpinBoxGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextMin 
+   Begin VBCCR17.TextBoxW TextMin 
       Height          =   315
       Left            =   1800
       TabIndex        =   6
@@ -145,45 +133,29 @@ Begin VB.PropertyPage PPSpinBoxGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.CheckBoxW CheckWrap 
+   Begin VB.CheckBox CheckWrap 
+      Caption         =   "Wrap"
       Height          =   285
       Left            =   4200
       TabIndex        =   20
       Top             =   840
       Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":016A
    End
-   Begin VBCCR16.CheckBoxW CheckEnabled 
+   Begin VB.CheckBox CheckEnabled 
+      Caption         =   "Enabled"
       Height          =   285
       Left            =   120
       TabIndex        =   0
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":0192
    End
-   Begin VBCCR16.CheckBoxW CheckLocked 
+   Begin VB.CheckBox CheckLocked 
+      Caption         =   "Locked"
       Height          =   285
       Left            =   1800
       TabIndex        =   1
       Top             =   120
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":01C0
-   End
-   Begin VBCCR16.CheckBoxW CheckMouseTrack 
-      Height          =   285
-      Left            =   4200
-      TabIndex        =   19
-      Top             =   480
-      Width           =   1800
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPSpinBoxGeneral.pgx":01EC
    End
    Begin VB.Label LabelNumberStyle 
       Caption         =   "NumberStyle:"

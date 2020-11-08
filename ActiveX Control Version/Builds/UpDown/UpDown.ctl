@@ -7,9 +7,9 @@ Begin VB.UserControl UpDown
    ClientWidth     =   2400
    HasDC           =   0   'False
    PropertyPages   =   "UpDown.ctx":0000
-   ScaleHeight     =   150
+   ScaleHeight     =   120
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   200
+   ScaleWidth      =   160
    ToolboxBitmap   =   "UpDown.ctx":0028
    Begin VB.Timer TimerBuddyControl 
       Enabled         =   0   'False
@@ -117,33 +117,22 @@ Private Const WM_MOUSELEAVE As Long = &H2A3
 Private Const WM_HSCROLL As Long = &H114
 Private Const WM_VSCROLL As Long = &H115
 Private Const WM_NOTIFY As Long = &H4E
-Private Const H_MAX As Long = (&HFFFF + 1)
-Private Const UDN_FIRST As Long = (H_MAX - 721)
+Private Const UDN_FIRST As Long = (-721)
 Private Const UDN_DELTAPOS As Long = (UDN_FIRST - 1)
 Private Const UDS_WRAP As Long = &H1
-Private Const UDS_SETBUDDYINT As Long = &H2
-Private Const UDS_ALIGNRIGHT As Long = &H4
-Private Const UDS_ALIGNLEFT As Long = &H8
-Private Const UDS_AUTOBUDDY As Long = &H10
-Private Const UDS_ARROWKEYS As Long = &H20
 Private Const UDS_HORZ As Long = &H40
-Private Const UDS_NOTHOUSANDS As Long = &H80
 Private Const UDS_HOTTRACK As Long = &H100
 Private Const WM_USER As Long = &H400
-Private Const UDM_SETRANGE As Long = (WM_USER + 101)
-Private Const UDM_GETRANGE As Long = (WM_USER + 102)
+Private Const UDM_SETRANGE As Long = (WM_USER + 101) ' 16 bit
+Private Const UDM_GETRANGE As Long = (WM_USER + 102) ' 16 bit
 Private Const UDM_SETRANGE32 As Long = (WM_USER + 111)
 Private Const UDM_GETRANGE32 As Long = (WM_USER + 112)
-Private Const UDM_SETPOS As Long = (WM_USER + 103)
-Private Const UDM_GETPOS As Long = (WM_USER + 104)
+Private Const UDM_SETPOS As Long = (WM_USER + 103) ' 16 bit
+Private Const UDM_GETPOS As Long = (WM_USER + 104) ' 16 bit
 Private Const UDM_GETPOS32 As Long = (WM_USER + 114)
 Private Const UDM_SETPOS32 As Long = (WM_USER + 113)
-Private Const UDM_SETBUDDY As Long = (WM_USER + 105)
-Private Const UDM_GETBUDDY As Long = (WM_USER + 106)
 Private Const UDM_SETACCEL As Long = (WM_USER + 107)
 Private Const UDM_GETACCEL As Long = (WM_USER + 108)
-Private Const UDM_SETBASE As Long = (WM_USER + 109)
-Private Const UDM_GETBASE As Long = (WM_USER + 110)
 Private Const CCM_FIRST As Long = &H2000
 Private Const CCM_SETUNICODEFORMAT As Long = (CCM_FIRST + 5)
 Private Const UDM_SETUNICODEFORMAT As Long = CCM_SETUNICODEFORMAT
@@ -230,13 +219,15 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_UPDOWN_CLASS)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 ReDim BuddyControlArray(0) As String
 End Sub
 
 Private Sub UserControl_InitProperties()
 If DispIDBuddyControl = 0 Then DispIDBuddyControl = GetDispID(Me, "BuddyControl")
+On Error Resume Next
 UpDownDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 PropVisualStyles = True
 Me.OLEDropMode = vbOLEDropNone
 PropMouseTrack = False
@@ -260,7 +251,9 @@ End Sub
 
 Private Sub UserControl_ReadProperties(PropBag As PropertyBag)
 If DispIDBuddyControl = 0 Then DispIDBuddyControl = GetDispID(Me, "BuddyControl")
+On Error Resume Next
 UpDownDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 With PropBag
 PropVisualStyles = .ReadProperty("VisualStyles", True)
 Me.Enabled = .ReadProperty("Enabled", True)
@@ -360,7 +353,7 @@ InProc = False
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroyUpDown
 Call ComCtlsReleaseShellMod
 End Sub
@@ -940,7 +933,7 @@ If PropRightToLeft = True And PropRightToLeftLayout = True Then dwExStyle = dwEx
 If PropWrap = True Then dwStyle = dwStyle Or UDS_WRAP
 If PropHotTracking = True Then dwStyle = dwStyle Or UDS_HOTTRACK
 If PropOrientation = UdnOrientationHorizontal Then dwStyle = dwStyle Or UDS_HORZ
-UpDownHandle = CreateWindowEx(dwExStyle, StrPtr("msctls_updown32"), StrPtr("Up Down"), dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
+UpDownHandle = CreateWindowEx(dwExStyle, StrPtr("msctls_updown32"), 0, dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
 If UpDownHandle <> 0 Then
     SendMessage UpDownHandle, UDM_SETUNICODEFORMAT, 1, ByVal 0&
     SendMessage UpDownHandle, UDM_SETRANGE32, PropMin, ByVal PropMax

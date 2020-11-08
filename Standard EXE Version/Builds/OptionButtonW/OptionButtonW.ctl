@@ -132,6 +132,7 @@ Attribute OLEStartDrag.VB_Description = "Occurs when an OLE drag/drop operation 
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (ByRef Destination As Any, ByRef Source As Any, ByVal Length As Long)
 Private Declare Function CreateWindowEx Lib "user32" Alias "CreateWindowExW" (ByVal dwExStyle As Long, ByVal lpClassName As Long, ByVal lpWindowName As Long, ByVal dwStyle As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hWndParent As Long, ByVal hMenu As Long, ByVal hInstance As Long, ByRef lpParam As Any) As Long
 Private Declare Function SendMessage Lib "user32" Alias "SendMessageW" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByRef lParam As Any) As Long
+Private Declare Function PostMessage Lib "user32" Alias "PostMessageW" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByRef lParam As Any) As Long
 Private Declare Function DestroyWindow Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongW" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
 Private Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongW" (ByVal hWnd As Long, ByVal nIndex As Long) As Long
@@ -220,8 +221,8 @@ Private Const WS_CHILD As Long = &H40000000
 Private Const WS_EX_RTLREADING As Long = &H2000
 Private Const SW_HIDE As Long = &H0
 Private Const WM_NOTIFY As Long = &H4E
-Private Const WM_MOUSEACTIVATE As Long = &H21, MA_ACTIVATE As Long = &H1, MA_ACTIVATEANDEAT As Long = &H2, MA_NOACTIVATE As Long = &H3, MA_NOACTIVATEANDEAT As Long = &H4
 Private Const WM_SETFOCUS As Long = &H7
+Private Const WM_KILLFOCUS As Long = &H8
 Private Const WM_KEYDOWN As Long = &H100
 Private Const WM_KEYUP As Long = &H101
 Private Const WM_CHAR As Long = &H102
@@ -243,7 +244,6 @@ Private Const WM_DRAWITEM As Long = &H2B, ODT_BUTTON As Long = &H4, ODA_FOCUS As
 Private Const WM_DESTROY As Long = &H2
 Private Const WM_NCDESTROY As Long = &H82
 Private Const WM_THEMECHANGED As Long = &H31A
-Private Const WM_STYLECHANGED As Long = &H7D
 Private Const WM_SETFONT As Long = &H30
 Private Const WM_SETCURSOR As Long = &H20, HTCLIENT As Long = 1
 Private Const WM_CTLCOLORSTATIC As Long = &H138
@@ -275,6 +275,8 @@ Private Const BM_GETSTATE As Long = &HF2
 Private Const BM_SETSTATE As Long = &HF3
 Private Const BM_GETIMAGE As Long = &HF6
 Private Const BM_SETIMAGE As Long = &HF7
+Private Const WM_USER As Long = &H400
+Private Const UM_CHECKVALUE As Long = (WM_USER + 300)
 Private Const BCM_FIRST As Long = &H1600
 Private Const BCM_SETIMAGELIST As Long = (BCM_FIRST + 2)
 Private Const BCM_GETIMAGELIST As Long = (BCM_FIRST + 3)
@@ -308,14 +310,14 @@ Implements OLEGuids.IPerPropertyBrowsingVB
 Private OptionButtonHandle As Long
 Private OptionButtonTransparentBrush As Long
 Private OptionButtonOwnerDrawCheckedBrush As Long
-Private OptionButtonIgnoreClick As Boolean
 Private OptionButtonFontHandle As Long
 Private OptionButtonCharCodeCache As Long
 Private OptionButtonMouseOver(0 To 1) As Boolean
-Private OptionButtonDesignMode As Boolean, OptionButtonTopDesignMode As Boolean
+Private OptionButtonDesignMode As Boolean
 Private OptionButtonImageListHandle As Long
 Private OptionButtonImageListObjectPointer As Long
 Private OptionButtonEnabledVisualStyles As Boolean
+Private UCNoSetFocusFwd As Boolean
 Private DispIDMousePointer As Long
 Private DispIDImageList As Long, ImageListArray() As String
 Private WithEvents PropFont As StdFont
@@ -353,7 +355,7 @@ End Sub
 Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByRef riid As OLEGuids.OLECLSID, ByVal dwOptionsSetMask As Long, ByVal dwEnabledOptions As Long)
 End Sub
 
-Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
+Private Sub IOleInPlaceActiveObjectVB_TranslateAccelerator(ByRef Handled As Boolean, ByRef RetVal As Long, ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long, ByVal Shift As Long)
 If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     Dim KeyCode As Integer, IsInputKey As Boolean
     KeyCode = wParam And &HFF&
@@ -365,10 +367,8 @@ If wMsg = WM_KEYDOWN Or wMsg = WM_KEYUP Then
     Select Case KeyCode
         Case vbKeyUp, vbKeyDown, vbKeyLeft, vbKeyRight, vbKeyPageDown, vbKeyPageUp, vbKeyHome, vbKeyEnd, vbKeyTab, vbKeyReturn, vbKeyEscape
             If IsInputKey = True Then
-                If OptionButtonHandle <> 0 Then
-                    SendMessage OptionButtonHandle, wMsg, wParam, ByVal lParam
-                    Handled = True
-                End If
+                SendMessage hWnd, wMsg, wParam, ByVal lParam
+                Handled = True
             End If
     End Select
 End If
@@ -412,8 +412,8 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_STANDARD_CLASSES)
-Call SetVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 ReDim ImageListArray(0) As String
 End Sub
 
@@ -422,7 +422,6 @@ If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer"
 If DispIDImageList = 0 Then DispIDImageList = GetDispID(Me, "ImageList")
 On Error Resume Next
 OptionButtonDesignMode = Not Ambient.UserMode
-OptionButtonTopDesignMode = Not GetTopUserControl(Me).Ambient.UserMode
 On Error GoTo 0
 Set PropFont = Ambient.Font
 PropVisualStyles = True
@@ -457,7 +456,6 @@ If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer"
 If DispIDImageList = 0 Then DispIDImageList = GetDispID(Me, "ImageList")
 On Error Resume Next
 OptionButtonDesignMode = Not Ambient.UserMode
-OptionButtonTopDesignMode = Not GetTopUserControl(Me).Ambient.UserMode
 On Error GoTo 0
 With PropBag
 Set PropFont = .ReadProperty("Font", Nothing)
@@ -476,8 +474,8 @@ If PropRightToLeft = True Then Me.RightToLeft = True
 PropImageListName = .ReadProperty("ImageList", "(None)")
 PropImageListAlignment = .ReadProperty("ImageListAlignment", OptImageListAlignmentLeft)
 PropImageListMargin = .ReadProperty("ImageListMargin", 0)
-PropValue = .ReadProperty("Value", True)
-PropCaption = VarToStr(.ReadProperty("Caption", vbNullString))
+PropValue = .ReadProperty("Value", False)
+PropCaption = .ReadProperty("Caption", vbNullString) ' Unicode not necessary
 PropAlignment = .ReadProperty("Alignment", CCLeftRightAlignmentLeft)
 PropTextAlignment = .ReadProperty("TextAlignment", vbLeftJustify)
 PropPushLike = .ReadProperty("PushLike", False)
@@ -493,6 +491,7 @@ PropMaskColor = .ReadProperty("MaskColor", &HC0C0C0)
 PropDrawMode = .ReadProperty("DrawMode", OptDrawModeNormal)
 End With
 Call CreateOptionButton
+If PropValue = True And OptionButtonDesignMode = False Then PostMessage UserControl.hWnd, UM_CHECKVALUE, 0, ByVal 0&
 If Not PropImageListName = "(None)" Then TimerImageList.Enabled = True
 End Sub
 
@@ -513,8 +512,8 @@ With PropBag
 .WriteProperty "ImageList", PropImageListName, "(None)"
 .WriteProperty "ImageListAlignment", PropImageListAlignment, OptImageListAlignmentLeft
 .WriteProperty "ImageListMargin", PropImageListMargin, 0
-.WriteProperty "Value", PropValue, True
-.WriteProperty "Caption", StrToVar(PropCaption), vbNullString
+.WriteProperty "Value", PropValue, False
+.WriteProperty "Caption", PropCaption, vbNullString ' Unicode not necessary
 .WriteProperty "Alignment", PropAlignment, CCLeftRightAlignmentLeft
 .WriteProperty "TextAlignment", PropTextAlignment, vbLeftJustify
 .WriteProperty "PushLike", PropPushLike, False
@@ -583,8 +582,8 @@ InProc = False
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfaceInPlaceActiveObject)
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfaceInPlaceActiveObject)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroyOptionButton
 Call ComCtlsReleaseShellMod
 End Sub
@@ -891,6 +890,7 @@ Select Case Value
     Case Else
         Err.Raise 380
 End Select
+If OptionButtonDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MousePointer"
 End Property
 
@@ -918,6 +918,7 @@ Else
         End If
     End If
 End If
+If OptionButtonDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MouseIcon"
 End Property
 
@@ -1483,11 +1484,13 @@ If (dwStyle And BS_OWNERDRAW) = BS_OWNERDRAW Then
     dwStyle = WS_CHILD Or WS_VISIBLE Or BS_OWNERDRAW
 End If
 OptionButtonHandle = CreateWindowEx(dwExStyle, StrPtr("Button"), 0, dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
-If OptionButtonHandle <> 0 Then Call ComCtlsShowAllUIStates(OptionButtonHandle)
+If OptionButtonHandle <> 0 Then
+    Call ComCtlsShowAllUIStates(OptionButtonHandle)
+    If Not (dwStyle And BS_OWNERDRAW) = BS_OWNERDRAW Then SendMessage OptionButtonHandle, BM_SETCHECK, IIf(PropValue = True, BST_CHECKED, BST_UNCHECKED), ByVal 0&
+End If
 Set Me.Font = PropFont
 Me.VisualStyles = PropVisualStyles
 Me.Enabled = UserControl.Enabled
-If PropValue = True Then Me.Value = True
 Me.Caption = PropCaption
 If Not PropPicture Is Nothing Then Set Me.Picture = PropPicture
 If OptionButtonDesignMode = False Then
@@ -1654,6 +1657,9 @@ Private Function WindowProcControl(ByVal hWnd As Long, ByVal wMsg As Long, ByVal
 Select Case wMsg
     Case WM_SETFOCUS
         If wParam <> UserControl.hWnd Then SetFocusAPI UserControl.hWnd: Exit Function
+        Call ActivateIPAO(Me)
+    Case WM_KILLFOCUS
+        Call DeActivateIPAO
     Case WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
         Dim KeyCode As Integer
         KeyCode = wParam And &HFF&
@@ -1681,42 +1687,25 @@ Select Case wMsg
         RaiseEvent KeyPress(KeyChar)
         wParam = CIntToUInt(KeyChar)
     Case WM_UNICHAR
-        If wParam = UNICODE_NOCHAR Then WindowProcControl = 1 Else SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
+        If wParam = UNICODE_NOCHAR Then
+            WindowProcControl = 1
+        Else
+            Dim UTF16 As String
+            UTF16 = UTF32CodePoint_To_UTF16(wParam)
+            If Len(UTF16) = 1 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(UTF16)), ByVal lParam
+            ElseIf Len(UTF16) = 2 Then
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Left$(UTF16, 1))), ByVal lParam
+                SendMessage hWnd, WM_CHAR, CIntToUInt(AscW(Right$(UTF16, 1))), ByVal lParam
+            End If
+            WindowProcControl = 0
+        End If
         Exit Function
     Case WM_IME_CHAR
         SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
         Exit Function
-    Case WM_MOUSEACTIVATE
-        Static InProc As Boolean
-        If OptionButtonTopDesignMode = False And GetFocus() <> OptionButtonHandle Then
-            If InProc = True Then WindowProcControl = MA_ACTIVATEANDEAT: Exit Function
-            Select Case HiWord(lParam)
-                Case WM_LBUTTONDOWN
-                    On Error Resume Next
-                    With UserControl
-                    If .Extender.CausesValidation = True Then
-                        InProc = True
-                        Call ComCtlsTopParentValidateControls(Me)
-                        InProc = False
-                        If Err.Number = 380 Then
-                            WindowProcControl = MA_ACTIVATEANDEAT
-                        Else
-                            OptionButtonIgnoreClick = True
-                            SetFocusAPI .hWnd
-                            OptionButtonIgnoreClick = False
-                            WindowProcControl = MA_NOACTIVATE
-                        End If
-                    Else
-                        OptionButtonIgnoreClick = True
-                        SetFocusAPI .hWnd
-                        OptionButtonIgnoreClick = False
-                        WindowProcControl = MA_NOACTIVATE
-                    End If
-                    End With
-                    On Error GoTo 0
-                    Exit Function
-            End Select
-        End If
+    Case WM_LBUTTONDOWN
+        If GetFocus() <> hWnd Then UCNoSetFocusFwd = True: SetFocusAPI UserControl.hWnd: UCNoSetFocusFwd = False
     Case WM_SETCURSOR
         If LoWord(lParam) = HTCLIENT Then
             If MousePointerID(PropMousePointer) <> 0 Then
@@ -1816,11 +1805,7 @@ Select Case wMsg
         If lParam = OptionButtonHandle Then
             Select Case HiWord(wParam)
                 Case BN_CLICKED
-                    If OptionButtonIgnoreClick = True Then
-                        Exit Function
-                    ElseIf PropValue = False Then
-                        Me.Value = True
-                    End If
+                    If PropValue = False Then Me.Value = True
                 Case BN_DOUBLECLICKED
                     RaiseEvent DblClick
             End Select
@@ -1877,12 +1862,11 @@ Select Case wMsg
         CopyMemory DIS, ByVal lParam, LenB(DIS)
         If DIS.CtlType = ODT_BUTTON And DIS.hWndItem = OptionButtonHandle Then
             If (DIS.ItemAction And ODA_FOCUS) = ODA_FOCUS Then
-                PropValue = True
-                UserControl.PropertyChanged "Value"
+                If PropValue = False Then Me.Value = True
             End If
             If PropStyle = vbButtonGraphical Then
                 Dim Brush As Long, Text As String, TextRect As RECT
-                Brush = CreateSolidBrush(WinColor(UserControl.BackColor))
+                Brush = CreateSolidBrush(WinColor(Me.BackColor))
                 Text = Me.Caption
                 Dim ButtonPicture As IPictureDisp, DisabledPictureAvailable As Boolean
                 If (DIS.ItemState And ODS_DISABLED) = ODS_DISABLED Then
@@ -2153,9 +2137,14 @@ Select Case wMsg
             WindowProcUserControl = 1
             Exit Function
         End If
+    Case UM_CHECKVALUE
+        ' It is necessary to wait after all controls are initalized.
+        ' If the property value is still valid here then notify the container so that option groups behave correctly.
+        If PropValue = True Then UserControl.PropertyChanged "Value"
+        Exit Function
 End Select
 WindowProcUserControl = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
-If wMsg = WM_SETFOCUS Then SetFocusAPI OptionButtonHandle
+If wMsg = WM_SETFOCUS And UCNoSetFocusFwd = False Then SetFocusAPI OptionButtonHandle
 End Function
 
 Private Function WindowProcUserControlDesignMode(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
@@ -2168,10 +2157,5 @@ WindowProcUserControlDesignMode = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
 Select Case wMsg
     Case WM_DESTROY, WM_NCDESTROY
         Call ComCtlsRemoveSubclass(hWnd)
-    Case WM_STYLECHANGED
-        Dim dwStyleOld As Long, dwStyleNew As Long
-        CopyMemory dwStyleOld, ByVal lParam, 4
-        CopyMemory dwStyleNew, ByVal UnsignedAdd(lParam, 4), 4
-        If dwStyleOld = dwStyleNew Then Call ComCtlsRemoveSubclass(hWnd)
 End Select
 End Function

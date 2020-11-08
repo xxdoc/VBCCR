@@ -11,9 +11,9 @@ Begin VB.UserControl LabelW
    ForwardFocus    =   -1  'True
    HasDC           =   0   'False
    PropertyPages   =   "LabelW.ctx":0000
-   ScaleHeight     =   150
+   ScaleHeight     =   120
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   200
+   ScaleWidth      =   160
    ToolboxBitmap   =   "LabelW.ctx":0035
    Windowless      =   -1  'True
    Begin VB.Timer TimerMouseTrack 
@@ -106,21 +106,20 @@ Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal hDC As Long) As L
 Private Declare Function DeleteDC Lib "gdi32" (ByVal hDC As Long) As Long
 Private Declare Function GetSystemMetrics Lib "user32" (ByVal nIndex As Long) As Long
 Private Declare Function DrawEdge Lib "user32" (ByVal hDC As Long, ByRef qRC As RECT, ByVal Edge As Long, ByVal grfFlags As Long) As Long
-Private Const DT_BOTTOM As Long = &H8
-Private Const DT_CALCRECT As Long = &H400
-Private Const DT_CENTER As Long = &H1
-Private Const DT_END_ELLIPSIS As Long = &H8000&
+Private Declare Function CreateRectRgn Lib "gdi32" (ByVal X1 As Long, ByVal Y1 As Long, ByVal X2 As Long, ByVal Y2 As Long) As Long
+Private Declare Function GetClipRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As Long) As Long
+Private Declare Function SelectClipRgn Lib "gdi32" (ByVal hDC As Long, ByVal hRgn As Long) As Long
 Private Const DT_LEFT As Long = &H0
-Private Const DT_MODIFYSTRING As Long = &H10000
+Private Const DT_CENTER As Long = &H1
+Private Const DT_RIGHT As Long = &H2
+Private Const DT_WORDBREAK As Long = &H10
 Private Const DT_NOCLIP As Long = &H100
+Private Const DT_CALCRECT As Long = &H400
 Private Const DT_NOPREFIX As Long = &H800
 Private Const DT_PATH_ELLIPSIS As Long = &H4000
-Private Const DT_RIGHT As Long = &H2
+Private Const DT_END_ELLIPSIS As Long = &H8000&
+Private Const DT_MODIFYSTRING As Long = &H10000
 Private Const DT_RTLREADING As Long = &H20000
-Private Const DT_SINGLELINE As Long = &H20
-Private Const DT_TOP As Long = &H0
-Private Const DT_VCENTER As Long = &H4
-Private Const DT_WORDBREAK As Long = &H10
 Private Const DT_WORD_ELLIPSIS As Long = &H40000
 Private Const SM_CXBORDER As Long = 5
 Private Const SM_CYBORDER As Long = 6
@@ -192,12 +191,14 @@ End Sub
 
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 End Sub
 
 Private Sub UserControl_InitProperties()
 If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer")
+On Error Resume Next
 LabelDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 Set PropFont = Ambient.Font
 Set UserControl.Font = PropFont
 PropMousePointer = 0: Set PropMouseIcon = Nothing
@@ -217,7 +218,9 @@ End Sub
 
 Private Sub UserControl_ReadProperties(PropBag As PropertyBag)
 If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer")
+On Error Resume Next
 LabelDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 With PropBag
 Set PropFont = .ReadProperty("Font", Nothing)
 If PropFont Is Nothing Then Set PropFont = Ambient.Font
@@ -237,7 +240,7 @@ If PropRightToLeft = True Then Me.RightToLeft = True
 PropAlignment = .ReadProperty("Alignment", vbLeftJustify)
 PropBorderStyle = .ReadProperty("BorderStyle", CCBorderStyleNone)
 Me.BackStyle = .ReadProperty("BackStyle", CCBackStyleOpaque)
-PropCaption = .ReadProperty("Caption", vbNullString)
+PropCaption = .ReadProperty("Caption", vbNullString) ' Unicode not necessary
 PropUseMnemonic = .ReadProperty("UseMnemonic", True)
 PropAutoSize = .ReadProperty("AutoSize", False)
 PropWordWrap = .ReadProperty("WordWrap", False)
@@ -267,7 +270,7 @@ With PropBag
 .WriteProperty "Alignment", PropAlignment, vbLeftJustify
 .WriteProperty "BorderStyle", PropBorderStyle, CCBorderStyleNone
 .WriteProperty "BackStyle", Me.BackStyle, CCBackStyleOpaque
-.WriteProperty "Caption", PropCaption, vbNullString
+.WriteProperty "Caption", PropCaption, vbNullString ' Unicode not necessary
 .WriteProperty "UseMnemonic", PropUseMnemonic, True
 .WriteProperty "AutoSize", PropAutoSize, False
 .WriteProperty "WordWrap", PropWordWrap, False
@@ -337,8 +340,31 @@ If PropVerticalAlignment <> CCVerticalAlignmentTop Then
 End If
 SetRect RC, RC.Left + BorderWidth, RC.Top + BorderHeight, RC.Right - (BorderWidth * 2), RC.Bottom - (BorderHeight * 2)
 If Not PropCaption = vbNullString Then
-    LabelDisplayedCaption = PropCaption
-    DrawText .hDC, StrPtr(LabelDisplayedCaption), -1, RC, Format Or DT_MODIFYSTRING
+    ' The function could add up to four additional characters to this string.
+    ' The buffer containing the string should be large enough to accommodate these extra characters.
+    Buffer = PropCaption & String$(4, vbNullChar) & vbNullChar
+    Dim hRgn As Long
+    If PropAutoSize = True Then
+        ' Temporarily remove the clipping region in this case.
+        hRgn = CreateRectRgn(0, 0, 0, 0)
+        If hRgn <> 0 Then
+            If GetClipRgn(.hDC, hRgn) = 1 Then
+                SelectClipRgn .hDC, 0
+            Else
+                DeleteObject hRgn
+                hRgn = 0
+            End If
+        End If
+    End If
+    DrawText .hDC, StrPtr(Buffer), -1, RC, Format Or DT_MODIFYSTRING
+    If hRgn <> 0 Then
+        SelectClipRgn .hDC, hRgn
+        DeleteObject hRgn
+        hRgn = 0
+    End If
+    LabelDisplayedCaption = Left$(Buffer, InStr(Buffer, vbNullChar) - 1)
+Else
+    LabelDisplayedCaption = vbNullString
 End If
 End With
 End Sub
@@ -414,7 +440,7 @@ If HitResult = vbHitResultOutside Then HitResult = vbHitResultHit
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call ComCtlsReleaseShellMod
 End Sub
 
@@ -968,7 +994,15 @@ OldRight = .Extender.Left + .Extender.Width
 OldCenter = .Extender.Left + (.Extender.Width / 2)
 OldBottom = .Extender.Top + .Extender.Height
 OldVCenter = .Extender.Top + (.Extender.Height / 2)
-.Extender.Move .Extender.Left, .Extender.Top, .ScaleX((CalcRect.Right - CalcRect.Left) + (BorderWidth * 2), vbPixels, vbContainerSize), .ScaleY((CalcRect.Bottom - CalcRect.Top) + (BorderHeight * 2), vbPixels, vbContainerSize)
+If PropWordWrap = True Then
+    If .ScaleWidth < ((CalcRect.Right - CalcRect.Left) + (BorderWidth * 2)) Then
+        .Extender.Move .Extender.Left, .Extender.Top, .ScaleX((CalcRect.Right - CalcRect.Left) + (BorderWidth * 2), vbPixels, vbContainerSize), .ScaleY((CalcRect.Bottom - CalcRect.Top) + (BorderHeight * 2), vbPixels, vbContainerSize)
+    Else
+        .Extender.Height = .ScaleY((CalcRect.Bottom - CalcRect.Top) + (BorderHeight * 2), vbPixels, vbContainerSize)
+    End If
+Else
+    .Extender.Move .Extender.Left, .Extender.Top, .ScaleX((CalcRect.Right - CalcRect.Left) + (BorderWidth * 2), vbPixels, vbContainerSize), .ScaleY((CalcRect.Bottom - CalcRect.Top) + (BorderHeight * 2), vbPixels, vbContainerSize)
+End If
 LabelPaintFrozen = True
 Select Case PropAlignment
     Case vbCenter
@@ -996,12 +1030,10 @@ Else
     If hDCScreen <> 0 Then
         hDC = CreateCompatibleDC(hDCScreen)
         If hDC <> 0 Then
-            Dim hFontTemp As Long, hFontOld As Long
-            hFontTemp = CreateGDIFontFromOLEFont(PropFont)
-            hFontOld = SelectObject(hDC, hFontTemp)
+            Dim hFontOld As Long
+            hFontOld = SelectObject(hDC, GDIFontFromOLEFont(PropFont))
             Call DoAutoSize(hDC)
             If hFontOld <> 0 Then SelectObject hDC, hFontOld
-            If hFontTemp <> 0 Then DeleteObject hFontTemp
             DeleteDC hDC
         End If
         ReleaseDC 0, hDCScreen

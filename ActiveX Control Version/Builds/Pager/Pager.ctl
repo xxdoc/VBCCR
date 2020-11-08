@@ -8,9 +8,9 @@ Begin VB.UserControl Pager
    ClientWidth     =   2400
    HasDC           =   0   'False
    PropertyPages   =   "Pager.ctx":0000
-   ScaleHeight     =   150
+   ScaleHeight     =   120
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   200
+   ScaleWidth      =   160
    ToolboxBitmap   =   "Pager.ctx":0037
    Begin VB.Timer TimerBuddyControl 
       Enabled         =   0   'False
@@ -183,9 +183,6 @@ Private Const PGN_FIRST As Long = (-900)
 Private Const PGN_SCROLL As Long = (PGN_FIRST - 1)
 Private Const PGN_CALCSIZE As Long = (PGN_FIRST - 2)
 Private Const PGN_HOTITEMCHANGE As Long = (PGN_FIRST - 3)
-Private Const H_MAX As Long = (&HFFFF + 1)
-Private Const NM_FIRST As Long = H_MAX
-Private Const NM_RELEASEDCAPTURE As Long = (NM_FIRST - 16)
 Private Const PGS_VERT As Long = &H0
 Private Const PGS_HORZ As Long = &H1
 Private Const PGS_AUTOSCROLL As Long = &H2
@@ -292,7 +289,7 @@ End Sub
 Private Sub UserControl_Initialize()
 Call ComCtlsLoadShellMod
 Call ComCtlsInitCC(ICC_PAGESCROLLER_CLASS)
-Call SetVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call SetVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 ReDim BuddyControlArray(0) As String
 End Sub
 
@@ -301,8 +298,8 @@ If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer"
 If DispIDBuddyControl = 0 Then DispIDBuddyControl = GetDispID(Me, "BuddyControl")
 On Error Resume Next
 If UserControl.ParentControls.Count = 0 Then PagerAlignable = False Else PagerAlignable = True
-On Error GoTo 0
 PagerDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 PropBackColor = vbButtonFace
 PropOLEDragDropScroll = True
 PropMousePointer = 0: Set PropMouseIcon = Nothing
@@ -324,8 +321,8 @@ If DispIDMousePointer = 0 Then DispIDMousePointer = GetDispID(Me, "MousePointer"
 If DispIDBuddyControl = 0 Then DispIDBuddyControl = GetDispID(Me, "BuddyControl")
 On Error Resume Next
 If UserControl.ParentControls.Count = 0 Then PagerAlignable = False Else PagerAlignable = True
-On Error GoTo 0
 PagerDesignMode = Not Ambient.UserMode
+On Error GoTo 0
 With PropBag
 PropBackColor = .ReadProperty("BackColor", vbButtonFace)
 Me.Enabled = .ReadProperty("Enabled", True)
@@ -431,7 +428,7 @@ InProc = False
 End Sub
 
 Private Sub UserControl_Terminate()
-Call RemoveVTableSubclass(Me, VTableInterfacePerPropertyBrowsing)
+Call RemoveVTableHandling(Me, VTableInterfacePerPropertyBrowsing)
 Call DestroyPager
 Call ComCtlsReleaseShellMod
 End Sub
@@ -664,6 +661,7 @@ Select Case Value
     Case Else
         Err.Raise 380
 End Select
+If PagerDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MousePointer"
 End Property
 
@@ -691,6 +689,7 @@ Else
         End If
     End If
 End If
+If PagerDesignMode = False Then Call RefreshMousePointer
 UserControl.PropertyChanged "MouseIcon"
 End Property
 
@@ -990,7 +989,7 @@ Select Case PropOrientation
         dwStyle = dwStyle Or PGS_HORZ
 End Select
 If PropAutoScroll = True Then dwStyle = dwStyle Or PGS_AUTOSCROLL
-PagerHandle = CreateWindowEx(dwExStyle, StrPtr("SysPager"), StrPtr("Pager"), dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
+PagerHandle = CreateWindowEx(dwExStyle, StrPtr("SysPager"), 0, dwStyle, 0, 0, UserControl.ScaleWidth, UserControl.ScaleHeight, UserControl.hWnd, 0, App.hInstance, ByVal 0&)
 If PagerHandle <> 0 Then
     SendMessage PagerHandle, PGM_FORWARDMOUSE, 1, ByVal 0&
     SendMessage PagerHandle, PGM_SETBORDER, 0, ByVal PropBorderWidth

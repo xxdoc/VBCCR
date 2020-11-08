@@ -11,27 +11,23 @@ Begin VB.PropertyPage PPImageListImages
    ScaleHeight     =   310
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   386
-   Begin VBCCR16.CommandButtonW CommandMoveUp 
+   Begin VB.CommandButton CommandMoveUp 
+      Caption         =   ">>"
       Height          =   315
       Left            =   3480
       TabIndex        =   13
       ToolTipText     =   "Move Selected Picture Forward"
       Top             =   2640
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListImages.pgx":0000
    End
-   Begin VBCCR16.CommandButtonW CommandMoveDown 
+   Begin VB.CommandButton CommandMoveDown 
+      Caption         =   "<<"
       Height          =   315
       Left            =   2400
       TabIndex        =   12
       ToolTipText     =   "Move Selected Picture Back"
       Top             =   2640
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListImages.pgx":0024
    End
    Begin VB.HScrollBar HScroll 
       Height          =   255
@@ -41,38 +37,32 @@ Begin VB.PropertyPage PPImageListImages
       Top             =   2220
       Width           =   5595
    End
-   Begin VBCCR16.CommandButtonW CommandClear 
+   Begin VB.CommandButton CommandClear 
+      Caption         =   "&Clear..."
       Height          =   315
       Left            =   4680
       TabIndex        =   14
       ToolTipText     =   "Clear all"
       Top             =   2640
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListImages.pgx":0048
    End
-   Begin VBCCR16.CommandButtonW CommandRemove 
+   Begin VB.CommandButton CommandRemove 
+      Caption         =   "&Remove..."
       Height          =   315
       Left            =   1200
       TabIndex        =   11
       ToolTipText     =   "Remove Selected Picture"
       Top             =   2640
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListImages.pgx":007A
    End
-   Begin VBCCR16.CommandButtonW CommandInsert 
+   Begin VB.CommandButton CommandInsert 
+      Caption         =   "I&nsert..."
       Height          =   315
       Left            =   120
       TabIndex        =   10
       ToolTipText     =   "Insert Picture"
       Top             =   2640
       Width           =   1035
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListImages.pgx":00AE
    End
    Begin VB.Frame FrameCurrentImage 
       Caption         =   "Current Image"
@@ -81,7 +71,7 @@ Begin VB.PropertyPage PPImageListImages
       TabIndex        =   0
       Top             =   120
       Width           =   5655
-      Begin VBCCR16.TextBoxW TextTag 
+      Begin VBCCR17.TextBoxW TextTag 
          Height          =   315
          Left            =   2520
          TabIndex        =   6
@@ -93,7 +83,7 @@ Begin VB.PropertyPage PPImageListImages
          Enabled         =   0   'False
          MaxLength       =   20
       End
-      Begin VBCCR16.TextBoxW TextIndex 
+      Begin VBCCR17.TextBoxW TextIndex 
          Height          =   315
          Left            =   720
          TabIndex        =   2
@@ -103,10 +93,10 @@ Begin VB.PropertyPage PPImageListImages
          _ExtentY        =   0
          BackColor       =   -2147483633
          Enabled         =   0   'False
-         Text            =   "PPImageListImages.pgx":00E2
+         Text            =   "PPImageListImages.pgx":0000
          Locked          =   -1  'True
       End
-      Begin VBCCR16.TextBoxW TextKey 
+      Begin VBCCR17.TextBoxW TextKey 
          Height          =   315
          Left            =   2520
          TabIndex        =   4
@@ -183,7 +173,7 @@ Bottom As Long
 End Type
 Private Declare Function DrawEdge Lib "user32" (ByVal hDC As Long, ByRef qRC As RECT, ByVal Edge As Long, ByVal grfFlags As Long) As Long
 Private Declare Function GetFocus Lib "user32" () As Long
-Private Declare Function DrawFocusRect Lib "user32" (ByVal hDC As Long, lpRect As RECT) As Long
+Private Declare Function DrawFocusRect Lib "user32" (ByVal hDC As Long, ByRef lpRect As RECT) As Long
 Private Declare Function FillRect Lib "user32" (ByVal hDC As Long, ByRef lpRect As RECT, ByVal hBrush As Long) As Long
 Private Declare Function CreateSolidBrush Lib "gdi32" (ByVal crColor As Long) As Long
 Private Declare Function DeleteObject Lib "gdi32" (ByVal hObject As Long) As Long
@@ -192,8 +182,6 @@ Private Const BF_TOP As Long = 2
 Private Const BF_RIGHT As Long = 4
 Private Const BF_BOTTOM As Long = 8
 Private Const BF_RECT As Long = BF_LEFT Or BF_TOP Or BF_RIGHT Or BF_BOTTOM
-Private Const BDR_SUNKENINNER As Long = 8
-Private Const BDR_SUNKENOUTER As Long = 2
 Private Const BDR_RAISEDOUTER As Long = 1
 Private Const BDR_RAISEDINNER As Long = 4
 Private CurrIndex As Long
@@ -211,18 +199,37 @@ End Sub
 
 Private Sub PropertyPage_ApplyChanges()
 If CurrIndex > 0 Then
-    PropShadowListImages(CurrIndex).Key = TextKey.Text
     PropShadowListImages(CurrIndex).Tag = TextTag.Text
     Dim i As Long
     With PropertyPage.SelectedControls(0)
     .ListImages.Clear
     For i = 0 To UBound(PropShadowListImages())
         If i > 0 Then
-            With .ListImages.Add(i, PropShadowListImages(i).Key, PropShadowListImages(i).Picture)
-            .Tag = PropShadowListImages(i).Tag
-            End With
+            If i <> CurrIndex Then
+                With .ListImages.Add(i, PropShadowListImages(i).Key, PropShadowListImages(i).Picture)
+                .Tag = PropShadowListImages(i).Tag
+                End With
+            Else
+                With .ListImages.Add(i, , PropShadowListImages(i).Picture)
+                .Tag = PropShadowListImages(i).Tag
+                End With
+            End If
         End If
     Next i
+    If Not TextKey.Text = vbNullString Then
+        If .ListImages.Exists(TextKey.Text) = True Then
+            .ListImages(CurrIndex).Key = PropShadowListImages(CurrIndex).Key
+            MsgBox "This key is already associated with an element of this collection.", vbCritical + vbOKOnly
+            FreezeChanged = True
+            TextKey.Text = PropShadowListImages(CurrIndex).Key
+            FreezeChanged = False
+        Else
+            PropShadowListImages(CurrIndex).Key = TextKey.Text
+            .ListImages(CurrIndex).Key = PropShadowListImages(CurrIndex).Key
+        End If
+    Else
+        PropShadowListImages(CurrIndex).Key = vbNullString
+    End If
     End With
 End If
 Call PropertyPage_SelectionChanged
@@ -360,7 +367,7 @@ With PropertyPage.SelectedControls(0)
 ImageListHandle = .hImageList
 If ImageListHandle <> 0 Then
     Dim RC As RECT, TRC As RECT
-    Dim i As Long, X As Long, Y As Long
+    Dim i As Long, X As Long
     Dim Brush As Long, Max As Long
     RC.Left = 0
     RC.Top = 0

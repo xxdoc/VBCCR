@@ -9,35 +9,29 @@ Begin VB.PropertyPage PPImageListGeneral
    PaletteMode     =   0  'Halftone
    ScaleHeight     =   4650
    ScaleWidth      =   5790
-   Begin VBCCR16.CheckBoxW CheckRightToLeftMirror 
+   Begin VB.CheckBox CheckRightToLeftMirror 
+      Caption         =   "RightToLeftMirror"
       Height          =   285
       Left            =   120
       TabIndex        =   10
       Top             =   2160
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListGeneral.pgx":0000
    End
-   Begin VBCCR16.CheckBoxW CheckUseMaskColor 
+   Begin VB.CheckBox CheckUseMaskColor 
+      Caption         =   "UseMaskColor"
       Height          =   285
       Left            =   120
       TabIndex        =   12
       Top             =   2880
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListGeneral.pgx":0042
    End
-   Begin VBCCR16.CheckBoxW CheckUseBackColor 
+   Begin VB.CheckBox CheckUseBackColor 
+      Caption         =   "UseBackColor"
       Height          =   285
       Left            =   120
       TabIndex        =   11
       Top             =   2520
       Width           =   1620
-      _ExtentX        =   0
-      _ExtentY        =   0
-      Caption         =   "PPImageListGeneral.pgx":007A
    End
    Begin VB.OptionButton OptionSizeCustom 
       Caption         =   "Custom"
@@ -71,7 +65,7 @@ Begin VB.PropertyPage PPImageListGeneral
       Top             =   120
       Width           =   975
    End
-   Begin VBCCR16.TextBoxW TextImageWidth 
+   Begin VBCCR17.TextBoxW TextImageWidth 
       Height          =   315
       Left            =   1800
       TabIndex        =   7
@@ -80,7 +74,7 @@ Begin VB.PropertyPage PPImageListGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.TextBoxW TextImageHeight 
+   Begin VBCCR17.TextBoxW TextImageHeight 
       Height          =   315
       Left            =   1800
       TabIndex        =   5
@@ -89,15 +83,13 @@ Begin VB.PropertyPage PPImageListGeneral
       _ExtentX        =   0
       _ExtentY        =   0
    End
-   Begin VBCCR16.ComboBoxW ComboColorDepth 
+   Begin VB.ComboBox ComboColorDepth 
       Height          =   315
       Left            =   1200
+      Style           =   2  'Dropdown List
       TabIndex        =   9
       Top             =   1680
       Width           =   2235
-      _ExtentX        =   3942
-      _ExtentY        =   556
-      Style           =   2
    End
    Begin VB.Label LabelImageHeight 
       Caption         =   "Height:"
@@ -315,7 +307,7 @@ Else
     On Error GoTo 0
     If LngValue < 0 Then Cancel = True
     If Cancel = False Then
-        TextImageHeight.Text = CStr(LngValue)
+        TextImageHeight.Text = LngValue
     Else
         MsgBox "Invalid property value", vbCritical + vbOKOnly
         TextImageHeight.Text = PropertyPage.SelectedControls(0).ImageHeight
@@ -361,7 +353,7 @@ Else
     On Error GoTo 0
     If LngValue < 0 Then Cancel = True
     If Cancel = False Then
-        TextImageWidth.Text = CStr(LngValue)
+        TextImageWidth.Text = LngValue
     Else
         MsgBox "Invalid property value", vbCritical + vbOKOnly
         TextImageWidth.Text = PropertyPage.SelectedControls(0).ImageWidth
