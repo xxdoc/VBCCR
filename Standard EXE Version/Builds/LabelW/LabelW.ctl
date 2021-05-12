@@ -8,6 +8,7 @@ Begin VB.UserControl LabelW
    ClipBehavior    =   0  'None
    ClipControls    =   0   'False
    DataBindingBehavior=   1  'vbSimpleBound
+   DrawStyle       =   5  'Transparent
    ForwardFocus    =   -1  'True
    HasDC           =   0   'False
    PropertyPages   =   "LabelW.ctx":0000
@@ -1030,10 +1031,12 @@ Else
     If hDCScreen <> 0 Then
         hDC = CreateCompatibleDC(hDCScreen)
         If hDC <> 0 Then
-            Dim hFontOld As Long
-            hFontOld = SelectObject(hDC, GDIFontFromOLEFont(PropFont))
+            Dim Font As IFont, hFontOld As Long
+            Set Font = PropFont
+            If Not Font Is Nothing Then hFontOld = SelectObject(hDC, Font.hFont)
             Call DoAutoSize(hDC)
             If hFontOld <> 0 Then SelectObject hDC, hFontOld
+            Set Font = Nothing
             DeleteDC hDC
         End If
         ReleaseDC 0, hDCScreen

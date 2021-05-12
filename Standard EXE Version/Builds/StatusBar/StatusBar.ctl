@@ -6,6 +6,7 @@ Begin VB.UserControl StatusBar
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   2400
+   DrawStyle       =   5  'Transparent
    HasDC           =   0   'False
    PropertyPages   =   "StatusBar.ctx":0000
    ScaleHeight     =   120
@@ -339,6 +340,8 @@ Visible As Boolean
 Bold As Boolean
 PictureRenderFlag As Integer
 FixedWidth As Long
+Left As Long
+ActualWidth As Long
 End Type
 Private StatusBarHandle As Long, StatusBarToolTipHandle As Long
 Private StatusBarSizeGripAllowable As Boolean
@@ -1274,8 +1277,9 @@ End Property
 
 Friend Property Let FPanelText(ByVal Index As Long, ByVal Value As String)
 If StatusBarHandle <> 0 Then
-    PropShadowPanels(Index).Text = Replace(Value, vbTab, vbNullString)
+    PropShadowPanels(Index).Text = Replace$(Value, vbTab, vbNullString)
     Call SetPanelText(Index)
+    If PropShadowPanels(Index).AutoSize = SbrPanelAutoSizeContent Then Call SetParts
 End If
 End Property
 
@@ -1286,7 +1290,7 @@ End Property
 Friend Property Let FPanelToolTipText(ByVal Index As Long, ByVal Value As String)
 If StatusBarHandle <> 0 Then
     PropShadowPanels(Index).ToolTipText = Value
-    Call SetPanels
+    If PropShowTips = True Then Call SetPanelToolTipText(Index)
 End If
 End Property
 
@@ -1302,8 +1306,11 @@ If StatusBarHandle <> 0 Then
         Case Else
             Err.Raise 380
     End Select
-    Call SetParts
-    Call SetPanels
+    Dim RC As RECT
+    Call GetPanelRect(Index, RC)
+    InvalidateRect StatusBarHandle, ByVal VarPtr(RC), 1
+    UpdateWindow StatusBarHandle
+    If PropShadowPanels(Index).AutoSize = SbrPanelAutoSizeContent Then Call SetParts
 End If
 End Property
 
@@ -1376,6 +1383,12 @@ If StatusBarHandle <> 0 Then
     Call GetPanelRect(Index, RC)
     InvalidateRect StatusBarHandle, ByVal VarPtr(RC), 1
     UpdateWindow StatusBarHandle
+    If PropShadowPanels(Index).AutoSize = SbrPanelAutoSizeContent Then
+        Select Case PropShadowPanels(Index).Style
+            Case SbrPanelStyleTime, SbrPanelStyleDate
+                Call SetParts
+        End Select
+    End If
 End If
 End Property
 
@@ -1464,19 +1477,11 @@ End If
 End Property
 
 Friend Property Get FPanelLeft(ByVal Index As Long) As Single
-If StatusBarHandle <> 0 Then
-    Dim RC As RECT
-    Call GetPanelRect(Index, RC)
-    FPanelLeft = UserControl.ScaleX(RC.Left, vbPixels, vbContainerSize)
-End If
+If StatusBarHandle <> 0 Then FPanelLeft = UserControl.ScaleX(PropShadowPanels(Index).Left, vbPixels, vbContainerSize)
 End Property
 
 Friend Property Get FPanelWidth(ByVal Index As Long) As Single
-If StatusBarHandle <> 0 Then
-    Dim RC As RECT
-    Call GetPanelRect(Index, RC)
-    FPanelWidth = UserControl.ScaleX((RC.Right - RC.Left), vbPixels, vbContainerSize)
-End If
+If StatusBarHandle <> 0 Then FPanelWidth = UserControl.ScaleX(PropShadowPanels(Index).ActualWidth, vbPixels, vbContainerSize)
 End Property
 
 Friend Property Let FPanelWidth(ByVal Index As Long, ByVal Value As Single)
@@ -1778,7 +1783,7 @@ If StatusBarHandle <> 0 Then
         Dim i As Long
         Dim TotalWidth As Long
         SendMessage StatusBarHandle, SB_GETBORDERS, 0, ByVal VarPtr(Borders(0))
-        ReDim Parts(0 To PropShadowPanelsCount - 1)
+        ReDim Parts(0 To PropShadowPanelsCount - 1) As Long
         For i = 1 To PropShadowPanelsCount
             Parts(i - 1) = GetGoodWidth(i)
             TotalWidth = TotalWidth + Parts(i - 1)
@@ -1807,11 +1812,13 @@ If StatusBarHandle <> 0 Then
             End If
         End If
         TotalWidth = Borders(SBB_HORIZONTAL)
-        Dim Width As Long
         For i = 1 To PropShadowPanelsCount
-            Width = Parts(i - 1)
-            Parts(i - 1) = TotalWidth + Width
-            TotalWidth = TotalWidth + Width + Borders(SBB_DIVIDER)
+            With PropShadowPanels(i)
+            .Left = TotalWidth
+            .ActualWidth = Parts(i - 1)
+            TotalWidth = TotalWidth + Parts(i - 1) + Borders(SBB_DIVIDER)
+            Parts(i - 1) = .Left + .ActualWidth
+            End With
         Next i
         SendMessage StatusBarHandle, SB_SETPARTS, PropShadowPanelsCount, ByVal VarPtr(Parts(0))
     Else
@@ -1871,10 +1878,10 @@ End Function
 Private Sub GetPanelRect(ByVal Index As Long, ByRef RC As RECT)
 If StatusBarHandle <> 0 Then
     SendMessage StatusBarHandle, SB_GETRECT, Index - 1, ByVal VarPtr(RC)
-    If ComCtlsSupportLevel() = 1 Then
+    If ComCtlsSupportLevel() = 1 Then ' Bugfix for Windows XP
         If Me.IncludesSizeGrip = True Then
             Dim Parts() As Long
-            ReDim Parts(0 To (PropShadowPanelsCount - 1))
+            ReDim Parts(0 To (PropShadowPanelsCount - 1)) As Long
             SendMessage StatusBarHandle, SB_GETPARTS, PropShadowPanelsCount, ByVal VarPtr(Parts(0))
             RC.Right = Parts(Index - 1)
         End If
@@ -1950,9 +1957,7 @@ End Sub
 
 Private Sub CheckTimer()
 If StatusBarHandle <> 0 And PropShadowPanelsCount > 0 Then
-    On Error Resume Next
-    TimerUpdatePanels.Enabled = Ambient.UserMode
-    If Err.Number <> 0 Then TimerUpdatePanels.Enabled = False
+    TimerUpdatePanels.Enabled = Not StatusBarDesignMode
 Else
     TimerUpdatePanels.Enabled = False
 End If
@@ -2121,7 +2126,6 @@ Select Case wMsg
         CopyMemory DIS, ByVal lParam, LenB(DIS)
         If DIS.hWndItem = StatusBarHandle Then
             Call DrawPanel(DIS.ItemID + 1, DIS.hDC, DIS.RCItem)
-            Call SetParts
             WindowProcUserControl = 1
             Exit Function
         End If
@@ -2172,7 +2176,6 @@ If wMsg = WM_DRAWITEM Then
     CopyMemory DIS, ByVal lParam, LenB(DIS)
     If DIS.hWndItem = StatusBarHandle Then
         Call DrawPanel(DIS.ItemID + 1, DIS.hDC, DIS.RCItem)
-        Call SetParts
         WindowProcUserControlDesignMode = 1
         Exit Function
     End If

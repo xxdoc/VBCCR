@@ -5,6 +5,7 @@ Begin VB.UserControl SpinBox
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   2400
+   DrawStyle       =   5  'Transparent
    ForeColor       =   &H80000008&
    HasDC           =   0   'False
    PropertyPages   =   "SpinBox.ctx":0000
@@ -1326,9 +1327,7 @@ Select Case wMsg
         Dim P As POINTAPI
         P.X = Get_X_lParam(lParam)
         P.Y = Get_Y_lParam(lParam)
-        If PropAlignment = CCLeftRightAlignmentRight Then
-            If SpinBoxEditHandle <> 0 Then MapWindowPoints hWnd, SpinBoxEditHandle, P, 1
-        End If
+        MapWindowPoints hWnd, UserControl.hWnd, P, 1
         Dim X As Single
         Dim Y As Single
         X = UserControl.ScaleX(P.X, vbPixels, vbTwips)
@@ -1442,7 +1441,7 @@ Select Case wMsg
         SendMessage hWnd, WM_CHAR, wParam, ByVal lParam
         Exit Function
     Case WM_CONTEXTMENU
-        If wParam = SpinBoxEditHandle Then
+        If wParam = hWnd Then
             Dim P1 As POINTAPI, Handled As Boolean
             P1.X = Get_X_lParam(lParam)
             P1.Y = Get_Y_lParam(lParam)
@@ -1450,7 +1449,7 @@ Select Case wMsg
                 ' If the user types SHIFT + F10 then the X and Y coordinates are -1.
                 RaiseEvent ContextMenu(Handled, -1, -1)
             Else
-                ScreenToClient SpinBoxEditHandle, P1
+                ScreenToClient UserControl.hWnd, P1
                 RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P1.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P1.Y, vbPixels, vbContainerPosition))
             End If
             If Handled = True Then Exit Function
@@ -1462,9 +1461,7 @@ Select Case wMsg
         Dim P2 As POINTAPI
         P2.X = Get_X_lParam(lParam)
         P2.Y = Get_Y_lParam(lParam)
-        If PropAlignment = CCLeftRightAlignmentLeft Then
-            If SpinBoxUpDownHandle <> 0 Then MapWindowPoints hWnd, SpinBoxUpDownHandle, P2, 1
-        End If
+        MapWindowPoints hWnd, UserControl.hWnd, P2, 1
         Dim X As Single
         Dim Y As Single
         X = UserControl.ScaleX(P2.X, vbPixels, vbTwips)

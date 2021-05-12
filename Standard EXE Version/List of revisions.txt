@@ -1,5 +1,43 @@
 List of revisions:
 
+12-Apr-2021
+- Internal improvement in the StatusBar control.
+
+26-Mar-2021
+- UserControl.DrawStyle set to 5 = Transparent to avoid a wasted/unused GDI pen handle.
+
+17-Mar-2021
+- Improved CreateGDIFontFromOLEFont function.
+
+15-Mar-2021
+- HotTracking property improved in the ListView control.
+
+01-Mar-2021
+- Harmonization in the ContextMenu events. The X and Y parameters are now always originated to the control's hWnd.
+  Problem was in some controls which have child windows, resulted in confusing X and Y parameters.
+
+19-Feb-2021
+- Bugfix in the NodeClick/NodeDblClick event in the TreeView control.
+  Prior to this update it fired whenever hItem is <> 0.
+  Now it fires only when when in addition the hit-test flags are TVHT_ONITEMICON or TVHT_ONITEMLABEL. (like the MS TreeView does)
+- Improved the Nodes.Clear method in the TreeView control.
+  The selected item is now removed before clearing to have no unnecessary TVN_SELCHANGING/TVN_SELCHANGED notifications.
+
+18-Feb-2021
+- Bugfix in the Left/Width property (Get) of a Panel in the StatusBar control.
+
+16-Feb-2021
+- Internal improvement in the TextBoxW control.
+
+14-Feb-2021
+- Bugfix in the FrameW control related to 13-Feb-2021 update.
+
+13-Feb-2021
+- Bugfix in the FrameW control that mouse events were in pixels instead of twips.
+
+19-Jan-2021
+- TabMinWidth property can be set to -1 in the TabStrip control.
+
 23-Sep-2020
 - No crash anymore when passing a vbNullString to the .SelText property in various controls. (e.g. TextBoxW)
   Though, the fix concerns only Windows XP or below. Because as of Vista+ a NULL StrPtr() on EM_REPLACESEL does not cause harm.

@@ -2,8 +2,8 @@ VERSION 5.00
 Begin VB.Form MainForm 
    Caption         =   "ComCtls Demo"
    ClientHeight    =   8805
-   ClientLeft      =   165
-   ClientTop       =   555
+   ClientLeft      =   225
+   ClientTop       =   570
    ClientWidth     =   9915
    KeyPreview      =   -1  'True
    ScaleHeight     =   8805

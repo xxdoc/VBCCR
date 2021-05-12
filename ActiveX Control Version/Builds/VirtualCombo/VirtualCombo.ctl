@@ -5,6 +5,7 @@ Begin VB.UserControl VirtualCombo
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   2400
+   DrawStyle       =   5  'Transparent
    ForeColor       =   &H80000008&
    HasDC           =   0   'False
    PropertyPages   =   "VirtualCombo.ctx":0000
@@ -2147,7 +2148,7 @@ Select Case wMsg
                 ' If the user types SHIFT + F10 then the X and Y coordinates are -1.
                 RaiseEvent ContextMenu(Handled, -1, -1)
             Else
-                ScreenToClient hWnd, P3
+                ScreenToClient VirtualComboHandle, P3
                 RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P3.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P3.Y, vbPixels, vbContainerPosition))
             End If
             If Handled = True Then Exit Function

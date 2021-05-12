@@ -69,14 +69,6 @@ dwMinor As Long
 dwBuildNumber As Long
 dwPlatformID As Long
 End Type
-Private Type OSVERSIONINFO
-dwOSVersionInfoSize As Long
-dwMajorVersion As Long
-dwMinorVersion As Long
-dwBuildNumber As Long
-dwPlatformID As Long
-szCSDVersion(0 To ((128 * 2) - 1)) As Byte
-End Type
 Private Type POINTAPI
 X As Long
 Y As Long
@@ -150,7 +142,7 @@ Private Declare Function GetUserDefaultUILanguage Lib "kernel32" () As Integer
 Private Declare Function GetLocaleInfo Lib "kernel32" Alias "GetLocaleInfoW" (ByVal LCID As Long, ByVal LCType As Long, ByVal lpLCData As Long, ByVal cchData As Long) As Long
 Private Declare Function IsDialogMessage Lib "user32" Alias "IsDialogMessageW" (ByVal hDlg As Long, ByRef lpMsg As TMSG) As Long
 Private Declare Function DllGetVersion Lib "comctl32" (ByRef pdvi As DLLVERSIONINFO) As Long
-Private Declare Function GetVersionEx Lib "kernel32" Alias "GetVersionExW" (ByRef lpVersionInfo As OSVERSIONINFO) As Long
+Private Declare Function GetProcAddress Lib "kernel32" (ByVal hModule As Long, ByVal lpProcName As Any) As Long
 Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryW" (ByVal lpLibFileName As Long) As Long
 Private Declare Function FreeLibrary Lib "kernel32" (ByVal hLibModule As Long) As Long
 Private Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongW" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
@@ -162,9 +154,9 @@ Private Declare Function RemoveProp Lib "user32" Alias "RemovePropW" (ByVal hWnd
 Private Declare Function SetWindowSubclass Lib "comctl32" (ByVal hWnd As Long, ByVal pfnSubclass As Long, ByVal uIdSubclass As Long, ByVal dwRefData As Long) As Long
 Private Declare Function RemoveWindowSubclass Lib "comctl32" (ByVal hWnd As Long, ByVal pfnSubclass As Long, ByVal uIdSubclass As Long) As Long
 Private Declare Function DefSubclassProc Lib "comctl32" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
-Private Declare Function SetWindowSubclass_W2K Lib "comctl32" Alias "#410" (ByVal hWnd As Long, ByVal pfnSubclass As Long, ByVal uIdSubclass As Long, ByVal dwRefData As Long) As Long
-Private Declare Function RemoveWindowSubclass_W2K Lib "comctl32" Alias "#412" (ByVal hWnd As Long, ByVal pfnSubclass As Long, ByVal uIdSubclass As Long) As Long
-Private Declare Function DefSubclassProc_W2K Lib "comctl32" Alias "#413" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Private Declare Function SetWindowSubclassW2K Lib "comctl32" Alias "#410" (ByVal hWnd As Long, ByVal pfnSubclass As Long, ByVal uIdSubclass As Long, ByVal dwRefData As Long) As Long
+Private Declare Function RemoveWindowSubclassW2K Lib "comctl32" Alias "#412" (ByVal hWnd As Long, ByVal pfnSubclass As Long, ByVal uIdSubclass As Long) As Long
+Private Declare Function DefSubclassProcW2K Lib "comctl32" Alias "#413" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 Private Const GWL_STYLE As Long = (-16)
 Private Const GWL_EXSTYLE As Long = (-20)
 Private Const WM_DESTROY As Long = &H2
@@ -178,12 +170,13 @@ Private Const S_FALSE As Long = &H1
 Private Const S_OK As Long = &H0
 Private ShellModHandle As Long, ShellModCount As Long
 Private ComCtlsSubclassProcPtr As Long
+Private ComCtlsSubclassW2K As Integer
 Private CdlPDEXVTableIPDCB(0 To 5) As Long
 Private CdlFRHookHandle As Long
 Private CdlFRDialogHandle() As Long, CdlFRDialogCount As Long
 
 Public Sub ComCtlsLoadShellMod()
-If (ShellModHandle Or ShellModCount) = 0 Then ShellModHandle = LoadLibrary(StrPtr("Shell32.dll"))
+If (ShellModHandle Or ShellModCount) = 0 Then ShellModHandle = LoadLibrary(StrPtr("shell32.dll"))
 ShellModCount = ShellModCount + 1
 End Sub
 
@@ -593,34 +586,27 @@ End If
 ComCtlsSupportLevel = Value
 End Function
 
-Public Function ComCtlsW2KCompatibility() As Boolean
-Static Done As Boolean, Value As Boolean
-If Done = False Then
-    Dim Version As OSVERSIONINFO
-    On Error Resume Next
-    Version.dwOSVersionInfoSize = LenB(Version)
-    If GetVersionEx(Version) <> 0 Then
-        With Version
-        Const VER_PLATFORM_WIN32_NT As Long = 2
-        If .dwPlatformID = VER_PLATFORM_WIN32_NT Then
-            If .dwMajorVersion = 5 And .dwMinorVersion = 0 Then Value = True
-        End If
-        End With
-    End If
-    Done = True
-End If
-ComCtlsW2KCompatibility = Value
-End Function
-
 Public Sub ComCtlsSetSubclass(ByVal hWnd As Long, ByVal This As ISubclass, ByVal dwRefData As Long, Optional ByVal Name As String)
 If hWnd = 0 Then Exit Sub
 If Name = vbNullString Then Name = "ComCtls"
 If GetProp(hWnd, StrPtr(Name & "SubclassInit")) = 0 Then
     If ComCtlsSubclassProcPtr = 0 Then ComCtlsSubclassProcPtr = ProcPtr(AddressOf ComCtlsSubclassProc)
-    If ComCtlsW2KCompatibility() = False Then
+    If ComCtlsSubclassW2K = 0 Then
+        Dim hLib As Long
+        hLib = LoadLibrary(StrPtr("comctl32.dll"))
+        If hLib <> 0 Then
+            If GetProcAddress(hLib, "SetWindowSubclass") <> 0 Then
+                ComCtlsSubclassW2K = 1
+            ElseIf GetProcAddress(hLib, 410&) <> 0 Then
+                ComCtlsSubclassW2K = -1
+            End If
+            FreeLibrary hLib
+        End If
+    End If
+    If ComCtlsSubclassW2K > -1 Then
         SetWindowSubclass hWnd, ComCtlsSubclassProcPtr, ObjPtr(This), dwRefData
     Else
-        SetWindowSubclass_W2K hWnd, ComCtlsSubclassProcPtr, ObjPtr(This), dwRefData
+        SetWindowSubclassW2K hWnd, ComCtlsSubclassProcPtr, ObjPtr(This), dwRefData
     End If
     SetProp hWnd, StrPtr(Name & "SubclassID"), ObjPtr(This)
     SetProp hWnd, StrPtr(Name & "SubclassInit"), 1
@@ -628,10 +614,10 @@ End If
 End Sub
 
 Public Function ComCtlsDefaultProc(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
-If ComCtlsW2KCompatibility() = False Then
+If ComCtlsSubclassW2K > -1 Then
     ComCtlsDefaultProc = DefSubclassProc(hWnd, wMsg, wParam, lParam)
 Else
-    ComCtlsDefaultProc = DefSubclassProc_W2K(hWnd, wMsg, wParam, lParam)
+    ComCtlsDefaultProc = DefSubclassProcW2K(hWnd, wMsg, wParam, lParam)
 End If
 End Function
 
@@ -639,10 +625,10 @@ Public Sub ComCtlsRemoveSubclass(ByVal hWnd As Long, Optional ByVal Name As Stri
 If hWnd = 0 Then Exit Sub
 If Name = vbNullString Then Name = "ComCtls"
 If GetProp(hWnd, StrPtr(Name & "SubclassInit")) = 1 Then
-    If ComCtlsW2KCompatibility() = False Then
+    If ComCtlsSubclassW2K > -1 Then
         RemoveWindowSubclass hWnd, ComCtlsSubclassProcPtr, GetProp(hWnd, StrPtr(Name & "SubclassID"))
     Else
-        RemoveWindowSubclass_W2K hWnd, ComCtlsSubclassProcPtr, GetProp(hWnd, StrPtr(Name & "SubclassID"))
+        RemoveWindowSubclassW2K hWnd, ComCtlsSubclassProcPtr, GetProp(hWnd, StrPtr(Name & "SubclassID"))
     End If
     RemoveProp hWnd, StrPtr(Name & "SubclassID")
     RemoveProp hWnd, StrPtr(Name & "SubclassInit")
@@ -656,10 +642,10 @@ Select Case wMsg
         Exit Function
     Case WM_NCDESTROY, WM_UAHDESTROYWINDOW
         ComCtlsSubclassProc = ComCtlsDefaultProc(hWnd, wMsg, wParam, lParam)
-        If ComCtlsW2KCompatibility() = False Then
+        If ComCtlsSubclassW2K > -1 Then
             RemoveWindowSubclass hWnd, ComCtlsSubclassProcPtr, uIdSubclass
         Else
-            RemoveWindowSubclass_W2K hWnd, ComCtlsSubclassProcPtr, uIdSubclass
+            RemoveWindowSubclassW2K hWnd, ComCtlsSubclassProcPtr, uIdSubclass
         End If
         Exit Function
 End Select

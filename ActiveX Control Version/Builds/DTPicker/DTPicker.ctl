@@ -5,6 +5,7 @@ Begin VB.UserControl DTPicker
    ClientTop       =   0
    ClientWidth     =   2400
    DataBindingBehavior=   1  'vbSimpleBound
+   DrawStyle       =   5  'Transparent
    HasDC           =   0   'False
    PropertyPages   =   "DTPicker.ctx":0000
    ScaleHeight     =   120
@@ -2177,7 +2178,7 @@ Select Case wMsg
                 ' If the user types SHIFT + F10 then the X and Y coordinates are -1.
                 RaiseEvent ContextMenu(Handled, -1, -1)
             Else
-                ScreenToClient hWnd, P1
+                ScreenToClient DTPickerHandle, P1
                 RaiseEvent ContextMenu(Handled, UserControl.ScaleX(P1.X, vbPixels, vbContainerPosition), UserControl.ScaleY(P1.Y, vbPixels, vbContainerPosition))
             End If
             If Handled = True Then Exit Function

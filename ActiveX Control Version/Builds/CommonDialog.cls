@@ -715,7 +715,7 @@ Private Declare Function SetFocusAPI Lib "user32" Alias "SetFocus" (ByVal hWnd A
 Private Declare Function SHBrowseForFolder Lib "shell32" Alias "SHBrowseForFolderW" (ByRef lpBrowseInfo As BROWSEINFO) As Long
 Private Declare Function SHGetFolderLocation Lib "shell32" (ByVal hWndOwner As Long, ByVal nFolder As Long, ByVal hToken As Long, ByVal dwReserved As Long, ByRef lpIDList As Long) As Long
 Private Declare Function ILCreateFromPath Lib "shell32" (ByVal lpszPath As Long) As Long
-Private Declare Function ILCreateFromPath_W2K Lib "shell32" Alias "#157" (ByVal lpszPath As Long) As Long
+Private Declare Function ILCreateFromPathW2K Lib "shell32" Alias "#157" (ByVal lpszPath As Long) As Long
 Private Declare Function SHGetPathFromIDList Lib "shell32" Alias "SHGetPathFromIDListW" (ByVal lpIDList As Long, ByVal lpBuffer As Long) As Long
 Private Declare Function RegisterWindowMessage Lib "user32" Alias "RegisterWindowMessageW" (ByVal lpString As Long) As Long
 Private Declare Function SendMessage Lib "user32" Alias "SendMessageW" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByRef lParam As Any) As Long
@@ -738,6 +738,9 @@ Private Declare Function GlobalUnlock Lib "kernel32" (ByVal hMem As Long) As Lon
 Private Declare Function GlobalSize Lib "kernel32" (ByVal hMem As Long) As Long
 Private Declare Function GlobalAlloc Lib "kernel32" (ByVal wFlags As Long, ByVal dwBytes As Long) As Long
 Private Declare Function GlobalFree Lib "kernel32" (ByVal hMem As Long) As Long
+Private Declare Function LoadLibrary Lib "kernel32" Alias "LoadLibraryW" (ByVal lpLibFileName As Long) As Long
+Private Declare Function FreeLibrary Lib "kernel32" (ByVal hLibModule As Long) As Long
+Private Declare Function GetProcAddress Lib "kernel32" (ByVal hModule As Long, ByVal lpProcName As Any) As Long
 Private Const HELPMSGSTRING As String = "commdlg_help"
 Private Const SHAREVISTRING As String = "commdlg_ShareViolation"
 Private Const FILEOKSTRING As String = "commdlg_FileNameOK"
@@ -768,6 +771,7 @@ Private CommonDialogFRDialogHandle As Long
 Private CommonDialogFRBufferFindWhat As String
 Private CommonDialogFRBufferReplaceWith As String
 Private CommonDialogDMFieldsExclusion As Long
+Private CommonDialogILCreateFromPathW2K As Integer
 Private PropCancelError As Boolean
 Private PropHookEvents As Boolean
 Private PropTag As String
@@ -2436,10 +2440,22 @@ Select Case VarType(PropRootFolder)
     Case vbLong, vbInteger, vbByte
         SHGetFolderLocation 0, PropRootFolder, 0, 0, .pIDLRoot
     Case vbString
-        If ComCtlsW2KCompatibility() = False Then
+        If CommonDialogILCreateFromPathW2K = 0 Then
+            Dim hLib As Long
+            hLib = LoadLibrary(StrPtr("shell32.dll"))
+            If hLib <> 0 Then
+                If GetProcAddress(hLib, "ILCreateFromPath") <> 0 Then
+                    CommonDialogILCreateFromPathW2K = 1
+                ElseIf GetProcAddress(hLib, 157&) <> 0 Then
+                    CommonDialogILCreateFromPathW2K = -1
+                End If
+                FreeLibrary hLib
+            End If
+        End If
+        If CommonDialogILCreateFromPathW2K > -1 Then
             .pIDLRoot = ILCreateFromPath(StrPtr(Left$(PropRootFolder, MAX_PATH)))
         Else
-            .pIDLRoot = ILCreateFromPath_W2K(StrPtr(Left$(PropRootFolder, MAX_PATH)))
+            .pIDLRoot = ILCreateFromPathW2K(StrPtr(Left$(PropRootFolder, MAX_PATH)))
         End If
     Case vbDouble, vbSingle
         SHGetFolderLocation 0, CLng(PropRootFolder), 0, 0, .pIDLRoot
